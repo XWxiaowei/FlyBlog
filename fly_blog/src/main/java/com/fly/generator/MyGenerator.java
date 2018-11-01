@@ -7,7 +7,6 @@ import com.baomidou.mybatisplus.generator.config.GlobalConfig;
 import com.baomidou.mybatisplus.generator.config.PackageConfig;
 import com.baomidou.mybatisplus.generator.config.StrategyConfig;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import org.springframework.stereotype.Component;
 
 import java.util.ResourceBundle;
 
@@ -15,7 +14,6 @@ import java.util.ResourceBundle;
 /**
  * Created by Lucare.Feng on 2017/2/23.
  */
-@Component
 public class MyGenerator {
 
     /**
