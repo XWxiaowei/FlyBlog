@@ -63,6 +63,7 @@ public class FlyBlogApplication {
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20181101081456470.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
 位置二
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20181101081534693.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
+
 MyBatisPlus 还给我们提供了一个特别实用的功能。自动生成代码，它可以自动生成dao,model,mapper,service,controller的代码。
 ### 自动生成代码配置
 生成代码启动类
@@ -219,6 +220,87 @@ passWord=admin
 		</dependency>
 ```
 ## 集成Redis
+### 第一步：导入redis的pom包
+`
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+`
+### 第二步：配置redis的连接信息
+```
+spring:  redis:
+    sentinel:
+      master: mymaster
+      nodes: 
+
+```
+第三步：为了让我们存到redis中的数据更容易看懂，我们需要
+换一种序列化方式，默认的是采用jdk的序列化方式，这里选用Jackson2JsonRedisSerializer，
+只需要重写redisTemplate操作模板的生成方式即可。新建一个config包，放在这个包下。
+
+```
+
+@Configuration
+public class RedisConfiguration {
+
+    @Bean
+    public RedisTemplate redisTemplate(RedisConnectionFactory redisConnectionFactory) throws UnknownHostException {
+        RedisTemplate<Object, Object> template = new RedisTemplate();
+        template.setConnectionFactory(redisConnectionFactory);
+
+        Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Object.class);
+        jackson2JsonRedisSerializer.setObjectMapper(new ObjectMapper());
+
+        template.setKeySerializer(jackson2JsonRedisSerializer);
+        template.setValueSerializer(jackson2JsonRedisSerializer);
+
+        return template;
+    }
+}
+
+```
 ## 全局异常处理
-## 首页处理
+步骤一. 自定义异常类
+```
+public class MyException extends RuntimeException {
+    public MyException(String message) {
+        super(message);
+    }
+}
+
+```
+步骤二. 定义全局异常处理，使用`@ControllerAdvice`表示
+定义全局控制器异常处理，使用`@ExceptionHandler`表示
+针对性异常处理，可对每种异常针对性处理
+```
+@Slf4j
+@ControllerAdvice
+public class GlobalExceptionHandle {
+    @ExceptionHandler(value = Exception.class)
+    public ModelAndView defaultErrorHandler(HttpServletRequest req, Exception e) {
+        log.error("------------------>捕获到全局异常", e);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("exception", e);
+        modelAndView.addObject("url", req.getRequestURI());
+        modelAndView.setViewName("error");
+        return modelAndView;
+    }
+
+    @ExceptionHandler(value = MyException.class)
+    @ResponseBody
+    public R jsonErrorHandler(HttpServletRequest req, MyException e) {
+
+        return R.failed(e.getMessage());
+    }
+}
+
+
+```
+## 数据库设计
+sql语句参见： flyblog.sql
+
+
+以上就是分支1内容
