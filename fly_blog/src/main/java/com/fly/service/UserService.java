@@ -1,6 +1,7 @@
 package com.fly.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.fly.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.fly.shiro.AccountProfile;
@@ -32,5 +33,10 @@ public interface UserService extends IService<User> {
     void join(IPage<Map<String, Object>> pageData, String linkfield);
 
 
+    /**
+     * @param user
+     * @return
+     */
+    R register(User user);
 
 }

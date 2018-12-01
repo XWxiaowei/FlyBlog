@@ -1,7 +1,9 @@
 package com.fly.service.impl;
 
+import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.fly.entity.User;
 import com.fly.dao.UserMapper;
 import com.fly.service.UserService;
@@ -13,6 +15,7 @@ import org.apache.shiro.authc.UnknownAccountException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
 import java.util.Date;
@@ -76,5 +79,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
             }
         }
+    }
+
+    @Override
+    public R register(User user) {
+        if(StringUtils.isEmpty(user.getEmail()) || StringUtils.isEmpty(user.getPassword())
+                || StringUtils.isEmpty(user.getUsername())) {
+            return R.failed("必要字段不能为空");
+        }
+
+        User po = this.getOne(new QueryWrapper<User>().eq("email", user.getEmail()));
+        if(po != null) {
+            return R.failed("邮箱已被注册");
+        }
+        String passMd5 = SecureUtil.md5(user.getPassword());
+        po = new User();
+
+        po.setEmail(user.getEmail());
+        po.setPassword(passMd5);
+        po.setCreated(new Date());
+        po.setUsername(user.getUsername());
+        po.setAvatar("/images/avatar/default.png");
+        po.setPoint(0);
+
+        return this.save(po)?R.ok(""):R.failed("注册失败");
     }
 }
