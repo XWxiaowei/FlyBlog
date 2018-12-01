@@ -302,5 +302,109 @@ public class GlobalExceptionHandle {
 ## 数据库设计
 sql语句参见： flyblog.sql
 
+以上就是分支1内容[v1-basecode]
+----------------------分支二内容[v2-shiro-login]----------------------------------
+##集成Shiro
+步骤一，引入pom文件
+```
+	<!--集成shiro-->
+		<dependency>
+			<groupId>org.apache.shiro</groupId>
+			<artifactId>shiro-spring</artifactId>
+			<version>1.4.0</version>
+		</dependency>
 
-以上就是分支1内容
+
+```
+Realm: 认证与授权
+SecurityManager:Shiro架构的核心，协调内部各个安全组件之间的交互。
+步骤二：配置Shiro的SecurityManager核心和过滤器
+```
+@Slf4j
+@Configuration
+public class ShiroConfig {
+
+    @Bean("securityManager")
+    public SecurityManager securityManager(OAuth2Realm oAuth2Realm){
+        DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        securityManager.setRealm(oAuth2Realm);
+
+        log.info("------------->securityManager注入完成");
+        return securityManager;
+    }
+
+    @Bean
+    public ShiroFilterFactoryBean shiroFilter(@Qualifier("securityManager") SecurityManager securityManager) {
+
+        ShiroFilterFactoryBean filterFactoryBean = new ShiroFilterFactoryBean();
+        filterFactoryBean.setSecurityManager(securityManager);
+        // 配置登录的url和登录成功的url
+        filterFactoryBean.setLoginUrl("/login");
+        filterFactoryBean.setSuccessUrl("/user/center");
+        // 配置未授权跳转页面
+        filterFactoryBean.setUnauthorizedUrl("/error/403");
+
+        Map<String, String> hashMap = new LinkedHashMap<>();
+        hashMap.put("/login", "anon");
+        hashMap.put("/user*", "user");
+        hashMap.put("/user/**", "user");
+        hashMap.put("/post/**", "user");
+        filterFactoryBean.setFilterChainDefinitionMap(hashMap);
+
+        return filterFactoryBean;
+    }
+}
+
+
+```
+在此处我们重写了认证和授权的Realm，并将Realm配置到SecurityManager中，
+然后shiro的过滤器呢，给Shiro配置了登录的url,登录成功url和没有权限提示的url,
+有配置了需要拦截的url。
+
+而Realm需要继承AuthorizingRealm并授权和认证方法。
+```
+@Slf4j
+@Component
+public class OAuth2Realm extends AuthorizingRealm {
+    @Autowired
+    private UserService userService;
+
+    /**
+     * 授权
+     *
+     * @param principalCollection
+     * @return
+     */
+    @Override
+    protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
+        return null;
+    }
+
+    /**
+     * 认证
+     *
+     * @param authenticationToken
+     * @return
+     * @throws AuthenticationException
+     */
+    @Override
+    protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+
+        UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
+//        注意token.getUsername()是指email!!!
+        AccountProfile profile = userService.login(token.getUsername(), String.valueOf(token.getPassword()));
+        log.info("-------------------->进入认证步骤");
+
+        SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(profile, token.getCredentials(), getName());
+
+        return info;
+    }
+}
+
+
+```
+这时候shiro已经集成到了项目中，启动项目后会打印 "securityManager注入完成"的提示。
+然后我们可以使用`SecurityUtils.getSubject()`去操作用户的权限操作了。
+## 登录注册
+
+

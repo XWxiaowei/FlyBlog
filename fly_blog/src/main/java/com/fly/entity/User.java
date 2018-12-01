@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -87,17 +88,17 @@ public class User extends Model<User> {
     /**
      * 最后的登陆时间
      */
-    private LocalDateTime lasted;
+    private Date lasted;
 
     /**
      * 创建日期
      */
-    private LocalDateTime created;
+    private Date created;
 
     /**
      * 最后修改时间
      */
-    private LocalDateTime modified;
+    private Date modified;
 
 
     public Long getId() {
@@ -204,28 +205,29 @@ public class User extends Model<User> {
         this.status = status;
     }
 
-    public LocalDateTime getLasted() {
-        return lasted;
-    }
 
-    public void setLasted(LocalDateTime lasted) {
-        this.lasted = lasted;
-    }
-
-    public LocalDateTime getCreated() {
-        return created;
-    }
-
-    public void setCreated(LocalDateTime created) {
-        this.created = created;
-    }
-
-    public LocalDateTime getModified() {
+    public Date getModified() {
         return modified;
     }
 
-    public void setModified(LocalDateTime modified) {
+    public void setModified(Date modified) {
         this.modified = modified;
+    }
+
+    public Date getLasted() {
+        return lasted;
+    }
+
+    public void setLasted(Date lasted) {
+        this.lasted = lasted;
+    }
+
+    public Date getCreated() {
+        return created;
+    }
+
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
     @Override
