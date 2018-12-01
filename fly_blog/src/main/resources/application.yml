@@ -1,3 +1,5 @@
+server:
+  port: 8081
 # DataSource Config
 spring:
   datasource:
@@ -5,10 +7,8 @@ spring:
     url: jdbc:mysql://localhost:3306/fly_blog
     username: root
     password: admin
-server:
-  port: 8081
-#redis
-#  redis:
-#    sentinel: mymaster
-#      master: 47.106.38.101:26379,47.106.38.101:26380
+  redis:
+      sentinel:
+        master: mymaster
+        nodes: 47.106.38.101:26379,47.106.38.101:26380
 
