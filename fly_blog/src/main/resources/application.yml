@@ -1,5 +1,5 @@
 server:
-  port: 8081
+  port: 8183
 # DataSource Config
 spring:
   datasource:
@@ -8,7 +8,12 @@ spring:
     username: root
     password: admin
   redis:
-    sentinel: mymaster
-    master: 47.106.38.101:26379,47.106.38.101:26380
-
-
+      sentinel:
+        master: mymaster
+        nodes: 47.106.38.101:26379,47.106.38.101:26380
+  thymeleaf:
+    cache: false
+logging:
+  level:
+    root: INFO
+    org.springframework.web: DEBUG
