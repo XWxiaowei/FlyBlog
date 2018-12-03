@@ -33,7 +33,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements UserService {
 
     @Override
     public AccountProfile login(String email, String password) {
@@ -103,5 +103,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         po.setPoint(0);
 
         return this.save(po)?R.ok(""):R.failed("注册失败");
+    }
+
+    @Override
+    public void join(Map<String, Object> map, String field) {
+        Map<Object, Object> joinColumns = new HashMap<>();
+
+        String linkfieldValue = map.get(field).toString();
+
+        User user = this.getById(linkfieldValue);
+        joinColumns.put("username", user.getUsername());
+        joinColumns.put("email", user.getEmail());
+        joinColumns.put("avatar", user.getAvatar());
+        joinColumns.put("id", user.getId());
+        map.put("author", joinColumns);
     }
 }

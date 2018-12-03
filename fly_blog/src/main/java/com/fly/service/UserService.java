@@ -16,7 +16,7 @@ import java.util.Map;
  * @author jay.xiang
  * @since 2018-10-29
  */
-public interface UserService extends IService<User> {
+public interface UserService extends BaseService<User> {
 
 
     /**
