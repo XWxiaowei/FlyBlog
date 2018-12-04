@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body th:fragment="page">
+
+<div id="pagejsId" class="laypage-main">
+    ...
+</div>
+
+<script th:inline="javascript">
+    var total=[[${pageData.total}]];
+    var size = [[${pageData.size}]];
+    var current = [[${pageData.current}]];
+    $(function () {
+        var url = window.location.href;
+        console.log(url);
+        $('#pagejsId').pagination({
+            coping:true,
+            prevContent:'上一页',
+            nextContent:'下一页',
+            totalData:total,
+            showData:size,
+            jumpBtnCls:"laypage-next",
+            activeCls:"laypage-curr",
+            current:current,
+            callback:function (data) {
+                var newCurrent = data.getCurrent();
+                console.log(newCurrent);
+                location.href="?current="+current;
+
+            }
+
+        });
+        
+    });
+</script>
+
+</body>
+</html>
