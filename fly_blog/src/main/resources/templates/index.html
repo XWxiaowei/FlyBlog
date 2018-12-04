@@ -33,8 +33,9 @@
                                               th:alt="${data.author.username}">
                         </a>
                         <h2>
-                            <a th:href="'/category/'+${data.category.id}" class="layui-badge"
-                            th:text="${data.category.name}">
+                            <a     th:if="${data!=null and data.category!=null}"
+                                    th:href="'/category/'+${data.category.id}" class="layui-badge"
+                                th:text="${data.category.name}">
                             </a>
                             <a th:href="'/post/'+${data.id}" th:text="${data.title}"></a>
                         </h2>

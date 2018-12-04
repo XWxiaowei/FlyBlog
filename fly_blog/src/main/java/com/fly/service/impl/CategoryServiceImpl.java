@@ -29,8 +29,10 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
             joinColumns.put("id", category.getId());
             joinColumns.put("name", category.getName());
             joinColumns.put("icon", category.getIcon());
+            map.put("category", joinColumns);
+        } else {
+            map.put("category",null);
         }
-        map.put("category", joinColumns);
 
     }
 }

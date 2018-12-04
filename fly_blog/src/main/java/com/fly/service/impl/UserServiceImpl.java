@@ -117,7 +117,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
             joinColumns.put("email", user.getEmail());
             joinColumns.put("avatar", user.getAvatar());
             joinColumns.put("id", user.getId());
+            map.put("author", joinColumns);
+
+        } else {
+            map.put("author",null);
         }
-        map.put("author", joinColumns);
     }
 }
