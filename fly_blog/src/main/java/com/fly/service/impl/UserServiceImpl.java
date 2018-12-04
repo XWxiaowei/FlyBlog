@@ -112,10 +112,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         String linkfieldValue = map.get(field).toString();
 
         User user = this.getById(linkfieldValue);
-        joinColumns.put("username", user.getUsername());
-        joinColumns.put("email", user.getEmail());
-        joinColumns.put("avatar", user.getAvatar());
-        joinColumns.put("id", user.getId());
+        if (user != null) {
+            joinColumns.put("username", user.getUsername());
+            joinColumns.put("email", user.getEmail());
+            joinColumns.put("avatar", user.getAvatar());
+            joinColumns.put("id", user.getId());
+        }
         map.put("author", joinColumns);
     }
 }
