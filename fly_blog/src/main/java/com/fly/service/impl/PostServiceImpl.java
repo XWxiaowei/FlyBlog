@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * @since 2018-10-29
  */
 @Service
-public class PostServiceImpl extends ServiceImpl<PostMapper, Post> implements PostService {
+public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implements PostService {
 
 
 

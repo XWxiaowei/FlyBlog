@@ -11,7 +11,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author jay.xiang
  * @since 2018-10-29
  */
-public interface PostService extends IService<Post> {
+public interface PostService extends BaseService<Post> {
 
 
 }

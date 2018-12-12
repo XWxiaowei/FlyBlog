@@ -14,4 +14,6 @@ spring:
 logging:
   level:
     root: INFO
-    org.springframework.web: DEBUG
+    org.springframework.web: INFO
+#    打印sql
+    com.fly.dao: DEBUG

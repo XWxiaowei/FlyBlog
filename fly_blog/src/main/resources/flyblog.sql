@@ -133,3 +133,26 @@ CREATE TABLE `user` (
 -- Records of user
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', 'xiaoming', '1111', null, null, '0', null, null, null, 'https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg', '0', '0', '0', null, '2018-10-14 18:41:34', null);
+
+CREATE TABLE user_collection (
+  id BIGINT NOT NULL auto_increment,
+  user_id BIGINT NOT NULL,
+  post_id BIGINT NOT NULL,
+  post_user_id BIGINT NOT NULL,
+  created datetime NOT NULL,
+  modified datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT '个人收藏';
+
+CREATE TABLE user_message (
+  id BIGINT NOT NULL auto_increment,
+  from_user_id BIGINT DEFAULT NULL COMMENT '发送消息的用户ID',
+  to_user_id BIGINT DEFAULT NULL COMMENT '接收消息的用户ID',
+  post_id BIGINT DEFAULT NULL COMMENT '消息可能关联的帖子',
+  comment_id BIGINT DEFAULT NULL COMMENT '消息可能关联的评论',
+  content text NOT NULL,
+  type TINYINT (2) DEFAULT NULL COMMENT '消息类型',
+  created datetime NOT NULL,
+  modified datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = INNODB DEFAULT CHARSET = utf8  COMMENT '我的消息';
