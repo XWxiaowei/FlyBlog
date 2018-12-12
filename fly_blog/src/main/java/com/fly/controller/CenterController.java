@@ -4,9 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fly.entity.UserCollection;
-import com.fly.service.UserCollectionService;
+import com.fly.entity.UserMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,8 +21,10 @@ import java.util.Map;
 @Controller
 public class CenterController extends BaseController {
 
+
     /**
      * 个人收藏分页查询
+     *
      * @param current
      * @param size
      * @return
@@ -38,13 +39,45 @@ public class CenterController extends BaseController {
         page.setSize(size);
 
         IPage<Map<String, Object>> pageData = userCollectionService.
-                pageMaps(page,new QueryWrapper<UserCollection>()
-                .eq("user_id",getProfileId()).orderByDesc("created"));
+                pageMaps(page, new QueryWrapper<UserCollection>()
+                        .eq("user_id", getProfileId()).orderByDesc("created"));
 
         postService.join(pageData, "post_id");
-        request.setAttribute("pageData",pageData);
+        request.setAttribute("pageData", pageData);
 
         return "user/collection";
     }
+
+    /**
+     * 个人信息
+     *
+     * @param current
+     * @param size
+     * @return
+     */
+    @GetMapping("/message")
+    public String message(
+            @RequestParam(defaultValue = "1") Integer current,
+            @RequestParam(defaultValue = "10") Integer size) {
+
+        IPage<UserMessage> page = new Page<>();
+        page.setCurrent(current);
+        page.setSize(size);
+
+        IPage<Map<String, Object>> pageData = userMessageService.
+                pageMaps(page, new QueryWrapper<UserMessage>()
+                        .eq("to_user_id", getProfileId()).orderByDesc("created"));
+
+//        关联发送者
+        userService.join(pageData, "from_user_id");
+//        文章相关消息(评论你文章的提示)
+        postService.join(pageData, "post_id");
+//        评论你评论的提示
+        commentService.join(pageData, "comment_id");
+        request.setAttribute("pageData", pageData);
+
+        return "user/message";
+    }
+
 
 }

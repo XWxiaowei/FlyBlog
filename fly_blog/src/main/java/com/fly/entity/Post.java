@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -92,12 +93,12 @@ public class Post extends Model<Post> {
     /**
      * 创建日期
      */
-    private LocalDateTime created;
+    private Date created;
 
     /**
      * 最后更新日期
      */
-    private LocalDateTime modified;
+    private Date modified;
 
 
     public Long getId() {
@@ -204,19 +205,19 @@ public class Post extends Model<Post> {
         this.status = status;
     }
 
-    public LocalDateTime getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
-    public LocalDateTime getModified() {
+    public Date getModified() {
         return modified;
     }
 
-    public void setModified(LocalDateTime modified) {
+    public void setModified(Date modified) {
         this.modified = modified;
     }
 

@@ -16,7 +16,7 @@ import java.util.Map;
 public class BaseServiceImpl<M extends BaseMapper<T>,T> extends ServiceImpl<M,T> implements BaseService<T> {
 
     @Override
-    public void join(Map<String, Object> stringObjectMap, String field) {
+    public void join(Map<String, Object> map, String field) {
 
     }
 
