@@ -1,15 +1,27 @@
 package com.fly.controller;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fly.entity.User;
 import com.fly.entity.UserCollection;
 import com.fly.entity.UserMessage;
+import com.fly.shiro.AccountProfile;
+import com.fly.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Date;
 import java.util.Map;
 
 /**
@@ -79,5 +91,89 @@ public class CenterController extends BaseController {
         return "user/message";
     }
 
+    /**
+     * 删除消息
+     *
+     * @param id
+     * @param all
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/message/remove")
+    public R removeMsg(Long id, boolean all) {
+        QueryWrapper<UserMessage> wrapper = new QueryWrapper<UserMessage>()
+                .eq("to_user_id", getProfileId())
+//                构建条件时写了.eq(!all,"id",id)。当!all时候才加上id
+//                的限制
+                .eq(!all, "id", id);
+        boolean res = userMessageService.remove(wrapper);
+        return res ? R.ok(null) : R.failed("删除失败");
+    }
 
+    /**
+     * 头像上传，文章上传
+     * Constant.uploadDir 是要上传的路径
+     * Constant.uploadUrl 是我另一个tomcat的项目路径
+     * Constant.uploadDir 对应的就是这个Constant.uploadUrl 的访问路径。
+     *
+     * 可以通过另外部署一个Tomcat或者nginx实现
+     * 当然也可以上传的云存储服务器
+     * @param file
+     * @param type
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/upload")
+    public R upload(@RequestParam(value = "file") MultipartFile file,
+                    @RequestParam(value = "avatar",name = "type") String type) {
+        if (file.isEmpty()) {
+            return R.failed("上传失败");
+        }
+        String fileName = null;
+//        获取原始文件名
+        String orgName = file.getOriginalFilename();
+        log.info("上传文件名为：" + orgName);
+//        获取后缀名
+        String suffixName = orgName.substring(orgName.lastIndexOf("."));
+        log.info("上传的后缀名为："+suffixName);
+//        文件上传后的路径
+        String filePath = Constant.uploadDir;
+        if ("avatar".equalsIgnoreCase(type)) {
+            fileName = "/avatar/avatar_" + getProfileId() + suffixName;
+        } else if ("post".equalsIgnoreCase(type)) {
+            fileName = "post/post_" + DateUtil.format(new Date(), DatePattern.PURE_DATETIME_MS_FORMAT) + suffixName;
+        }
+
+        File dest = new File(filePath + fileName);
+//        检查目录是否存在
+        if (!dest.getParentFile().exists()) {
+            dest.getParentFile().mkdir();
+        }
+
+        try {
+            //上传文件
+            file.transferTo(dest);
+            log.info("上传成功之后文件的路径={}",dest.getPath());
+
+            String url = Constant.uploadUrl + fileName;
+            log.info("url----->{}", url);
+
+            if ("avatar".equalsIgnoreCase(type)) {
+                User current = userService.getById(getProfileId());
+                current.setAvatar(url);
+
+                userService.updateById(current);
+            }
+
+//            更新shiro的信息
+            AccountProfile profile = getProfile();
+            profile.setAvatar(url);
+            return R.ok(url);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return R.ok(null);
+    }
 }
