@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>基于 layui 的极简社区页面模版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="fly,layui,前端社区">
+    <meta name="description" content="Fly社区是模块化前端UI框架Layui的官网社区，致力于为web开发提供强劲动力">
+
+    <!--全局样式-->
+    <link th:include="common/static :: style" />
+</head>
+<body>
+
+<!--头-->
+<div th:include="common/templates :: header"></div>
+
+<div class="layui-container fly-marginTop fly-user-main">
+
+    <div th:replace="common/_center :: left('message')"></div>
+    <div class="fly-panel fly-panel-user" pad20>
+        <div th:if="${not #lists.isEmpty(pageData.records)}" class=""></div>
+
+    </div>
+
+</div>
+
+</body>
+</html>
