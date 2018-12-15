@@ -102,6 +102,11 @@ public class User extends Model<User> {
 
     private String sign;
 
+    /**
+     * vip等级
+     */
+    private String vipLevel;
+
 
     public Long getId() {
         return id;
@@ -243,6 +248,14 @@ public class User extends Model<User> {
 
     public void setSign(String sign) {
         this.sign = sign;
+    }
+
+    public String getVipLevel() {
+        return vipLevel;
+    }
+
+    public void setVipLevel(String vipLevel) {
+        this.vipLevel = vipLevel;
     }
 
     @Override
