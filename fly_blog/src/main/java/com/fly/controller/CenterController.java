@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.fly.entity.Post;
 import com.fly.entity.User;
 import com.fly.entity.UserCollection;
 import com.fly.entity.UserMessage;
@@ -30,10 +31,27 @@ import java.util.Map;
  * @author xiang.wei
  */
 @Slf4j
-@Controller
+@Controller("/user")
 public class CenterController extends BaseController {
 
 
+    @GetMapping("/center")
+    public String center(@RequestParam(defaultValue = "1") Integer current,
+                         @RequestParam(defaultValue = "10") Integer size) {
+        Page<Post> page = new Page<>();
+        page.setCurrent(current);
+        page.setSize(size);
+
+        log.info("------------->进入个人中心");
+
+        QueryWrapper<Post> wrapper = new QueryWrapper<Post>().eq("user_id", getProfileId())
+                .orderByDesc("created");
+        IPage<Map<String, Object>> pageData = postService.pageMaps(page, wrapper);
+        request.setAttribute("pageData",pageData);
+
+        return "user/center";
+
+    }
     /**
      * 个人收藏分页查询
      *
