@@ -34,7 +34,7 @@ public class UserController  extends BaseController{
         Date date30Before = DateUtil.offsetDay(new Date(), -30).toJdkDate();
 
         List<Post> postList = postService.list(new QueryWrapper<Post>()
-                .eq("usre_id", id)
+                .eq("user_id", id)
                 .eq("created", date30Before)
                 .orderByDesc("created"));
 

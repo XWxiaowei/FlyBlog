@@ -1,5 +1,6 @@
 package com.fly.config;
 
+import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
 import com.fly.shiro.OAuth2Realm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.SecurityManager;
@@ -23,6 +24,7 @@ public class ShiroConfig {
 
     /**
      * 将重写后的oAuth2Realm配置到SecurityManager中
+     *
      * @param oAuth2Realm
      * @return
      */
@@ -38,6 +40,7 @@ public class ShiroConfig {
 
     /**
      * 配置了shiro的过滤器
+     *
      * @param securityManager
      * @return
      */
@@ -59,5 +62,11 @@ public class ShiroConfig {
         filterFactoryBean.setFilterChainDefinitionMap(hashMap);
 
         return filterFactoryBean;
+    }
+
+    //用于thymeleaf模板使用shiro标签,shiro方言标签
+    @Bean
+    public ShiroDialect shiroDialect() {
+        return new ShiroDialect();
     }
 }

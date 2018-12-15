@@ -37,7 +37,7 @@
                            <a class="jie-title" th:href="@{'/post/'+${data.id}}" target="_blank" th:text="${data.title}"></a>
                             <i th:text="${data.created}"></i>
                            <a class="mine-edit" th:href="@{/user/post(id=${data.id})}">编辑</a>
-                           <em><text th:text="${data.view_count}"></text>阅/<text th:text="${data.commnet_count}"></text>答</em>
+                           <em><text th:text="${data.view_count}"></text>阅/<text th:text="${data.comment_count}"></text>答</em>
                        </li>
 
                     </ul>
