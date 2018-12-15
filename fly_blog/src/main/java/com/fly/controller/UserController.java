@@ -23,7 +23,6 @@ import java.util.List;
  * @since 2018-10-29
  */
 @Controller
-@RequestMapping("/user")
 public class UserController  extends BaseController{
 
     @RequestMapping("/u/{id}")

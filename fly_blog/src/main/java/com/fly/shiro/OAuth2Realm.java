@@ -2,6 +2,7 @@ package com.fly.shiro;
 
 import com.fly.service.UserService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -48,6 +49,10 @@ public class OAuth2Realm extends AuthorizingRealm {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
 //        注意token.getUsername()是指email!!!
         AccountProfile profile = userService.login(token.getUsername(), String.valueOf(token.getPassword()));
+
+//        将登陆信息放在session
+        SecurityUtils.getSubject().getSession().setAttribute("profile",profile);
+
         log.info("-------------------->进入认证步骤");
 
         SimpleAuthenticationInfo info = new SimpleAuthenticationInfo(profile, token.getCredentials(), getName());
