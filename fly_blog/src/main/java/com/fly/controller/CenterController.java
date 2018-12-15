@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -49,11 +50,12 @@ public class CenterController extends BaseController {
         QueryWrapper<Post> wrapper = new QueryWrapper<Post>().eq("user_id", getProfileId())
                 .orderByDesc("created");
         IPage<Map<String, Object>> pageData = postService.pageMaps(page, wrapper);
-        request.setAttribute("pageData",pageData);
+        request.setAttribute("pageData", pageData);
 
         return "user/center";
 
     }
+
     /**
      * 个人收藏分页查询
      *
@@ -135,9 +137,10 @@ public class CenterController extends BaseController {
      * Constant.uploadDir 是要上传的路径
      * Constant.uploadUrl 是我另一个tomcat的项目路径
      * Constant.uploadDir 对应的就是这个Constant.uploadUrl 的访问路径。
-     *
+     * <p>
      * 可以通过另外部署一个Tomcat或者nginx实现
      * 当然也可以上传的云存储服务器
+     *
      * @param file
      * @param type
      * @return
@@ -145,7 +148,7 @@ public class CenterController extends BaseController {
     @ResponseBody
     @PostMapping("/upload")
     public R upload(@RequestParam(value = "file") MultipartFile file,
-                    @RequestParam(value = "avatar",name = "type") String type) {
+                    @RequestParam(value = "avatar", name = "type") String type) {
         if (file.isEmpty()) {
             return R.failed("上传失败");
         }
@@ -155,7 +158,7 @@ public class CenterController extends BaseController {
         log.info("上传文件名为：" + orgName);
 //        获取后缀名
         String suffixName = orgName.substring(orgName.lastIndexOf("."));
-        log.info("上传的后缀名为："+suffixName);
+        log.info("上传的后缀名为：" + suffixName);
 //        文件上传后的路径
         String filePath = Constant.uploadDir;
         if ("avatar".equalsIgnoreCase(type)) {
@@ -173,7 +176,7 @@ public class CenterController extends BaseController {
         try {
             //上传文件
             file.transferTo(dest);
-            log.info("上传成功之后文件的路径={}",dest.getPath());
+            log.info("上传成功之后文件的路径={}", dest.getPath());
 
             String url = Constant.uploadUrl + fileName;
             log.info("url----->{}", url);
@@ -195,5 +198,46 @@ public class CenterController extends BaseController {
         }
 
         return R.ok(null);
+    }
+
+    @GetMapping("/setting")
+    public String setting() {
+        User user = userService.getById(getProfileId());
+        user.setPassword(null);
+
+        request.setAttribute("user", user);
+        return "user/setting";
+    }
+
+    @ResponseBody
+    @PostMapping("/setting")
+    public R postSetting(User user) {
+        User tempUser = userService.getById(getProfileId());
+        tempUser.setUsername(user.getUsername());
+        tempUser.setGender(user.getGender());
+        tempUser.setSign(user.getSign());
+
+        boolean isSucc = userService.updateById(tempUser);
+        if (isSucc) {
+            //更新shiro的信息
+            AccountProfile profile = getProfile();
+            profile.setUsername(user.getUsername());
+            profile.setGender(user.getGender());
+        }
+
+        return isSucc ? R.ok(user): R.failed("更新失败");
+    }
+
+    /**
+     * 新消息通知功能
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/message/nums")
+    public Object getMessNums() {
+        Map<Object, Object> result = new HashMap<>();
+        result.put("status", 0);
+        result.put("count", 2);
+        return result;
     }
 }

@@ -172,18 +172,19 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
         ,before: function(){
           avatarAdd.find('.loading').show();
         }
-        ,done: function(res){
-          if(res.status == 0){
-            $.post('/user/set/', {
-              avatar: res.url
-            }, function(res){
-              location.reload();
-            });
-          } else {
-            layer.msg(res.msg, {icon: 5});
+          , done: function (res) {
+              // if(res.status == 0){
+              //   $.post('/user/set/', {
+              //     avatar: res.url
+              //   }, function(res){
+              if (res.code == 0) {
+                  location.reload();
+                  // });
+              } else {
+                  layer.msg(res.msg, {icon: 5});
+              }
+              avatarAdd.find('.loading').hide();
           }
-          avatarAdd.find('.loading').hide();
-        }
         ,error: function(){
           avatarAdd.find('.loading').hide();
         }

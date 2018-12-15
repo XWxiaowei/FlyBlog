@@ -116,8 +116,10 @@ CREATE TABLE `user` (
   `email` varchar(64) DEFAULT NULL COMMENT '邮件',
   `mobile` varchar(32) DEFAULT NULL COMMENT '手机电话',
   `point` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '积分',
+  `sign` varchar(255) DEFAULT NULL COMMENT '个性签名',
   `gender` varchar(16) DEFAULT NULL COMMENT '性别',
   `wechat` varchar(32) DEFAULT NULL COMMENT '微信号',
+  `vip_level` varchar(32) DEFAULT NULL COMMENT 'vip等级',
   `birthday` datetime DEFAULT NULL COMMENT '生日',
   `avatar` varchar(256) NOT NULL COMMENT '头像',
   `post_count` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '内容数量',
@@ -127,7 +129,7 @@ CREATE TABLE `user` (
   `created` datetime NOT NULL COMMENT '创建日期',
   `modified` datetime DEFAULT NULL COMMENT '最后修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of user
