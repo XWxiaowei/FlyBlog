@@ -216,6 +216,7 @@ public class CenterController extends BaseController {
         tempUser.setUsername(user.getUsername());
         tempUser.setGender(user.getGender());
         tempUser.setSign(user.getSign());
+        tempUser.setMobile(user.getMobile());
 
         boolean isSucc = userService.updateById(tempUser);
         if (isSucc) {
@@ -225,11 +226,12 @@ public class CenterController extends BaseController {
             profile.setGender(user.getGender());
         }
 
-        return isSucc ? R.ok(user): R.failed("更新失败");
+        return isSucc ? R.ok(user) : R.failed("更新失败");
     }
 
     /**
      * 新消息通知功能
+     *
      * @return
      */
     @ResponseBody
@@ -240,4 +242,27 @@ public class CenterController extends BaseController {
         result.put("count", 2);
         return result;
     }
+
+    /**
+     * 重置密码
+     *
+     * @param nowpass 当前密码
+     * @param pass    新密码
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/resetPwd")
+    public R restPwd(String nowpass, String pass) {
+        //查询用户
+        User user = userService.getById(getProfileId());
+        if (user == null || !nowpass.equals(user.getPassword())) {
+            return R.failed("密码不正确");
+        }
+        user.setPassword(pass);
+        boolean result = userService.updateById(user);
+        return R.ok(result);
+    }
+
+
+
 }
