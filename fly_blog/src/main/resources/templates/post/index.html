@@ -1,11 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+    <meta charset="utf-8">
+    <title>基于 layui 的极简社区页面模版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="fly,layui,前端社区">
+    <meta name="description" content="Fly社区是模块化前端UI框架Layui的官网社区，致力于为web开发提供强劲动力">
+
+    <!--全局样式-->
+    <link th:include="common/static :: style" />
 </head>
 <body>
+<!--头-->
+<div th:include="common/templates :: header"></div>
+<div th:include="common/templates :: header-nav"></div>
 
+<div class="layui-container">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md8 content detail">
+            <div class="fly-panel detail-box">
+                <h1 th:text="${post.title}"></h1>
+                <div class="fly-detail-info">
+                    <span class="layui-badge layui-bg-green fly-detail-column" th:text="${post.category.name}"></span>
+                    <span class="layui-badge layui-bg-black" th:if="${post.level gt 0}">置顶</span>
+                    <span class="layui-badge layui-bg-red" th:if="${post.recommend}">精贴</span>
+
+                    <div class="fly-admin-box" th:data-id="${post.id}">
+                        <shiro:user>
+                            <span class="layui-btn layui-btn-xs jie-admin" type="del" th:if="${post.user_id == session.profile.id}">删除</span>
+                        </shiro:user>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>
