@@ -1,21 +1,26 @@
 package com.fly.controller;
 
 
+import cn.hutool.core.map.MapUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.api.R;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fly.entity.Category;
+import com.fly.entity.Comment;
 import com.fly.entity.Post;
+import com.fly.entity.UserCollection;
 import com.fly.utils.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -72,14 +77,30 @@ public class PostController extends BaseController {
      * @return
      */
     @GetMapping("/post/{id}")
-    public String index(@PathVariable Long id) {
+    public String index(@PathVariable Long id,
+                        @RequestParam(defaultValue = "1") Integer current,
+                        @RequestParam(defaultValue = "10") Integer size) {
         Map<String, Object> post = postService.getMap(new QueryWrapper<Post>().eq("id", id));
         userService.join(post, "user_id");
         Assert.notNull(post, "该文章已被删除");
 
         request.setAttribute("post", post);
         request.setAttribute("currentCategoryId", post.get("category_id"));
-        return "post";
+
+        // TODO: 2018/12/18 添加评论
+        Page<Comment> page = new Page<>();
+        page.setCurrent(current);
+        page.setSize(size);
+
+        IPage<Map<String, Object>> pageData = commentService.pageMaps(page, new QueryWrapper<Comment>()
+                .eq("post_id", id)
+                .orderByDesc("created"));
+
+        userService.join(pageData, "user_id");
+        commentService.join(pageData, "parent_id");
+
+        request.setAttribute("pageData", pageData);
+        return "post/index";
     }
 
     /**
@@ -107,6 +128,7 @@ public class PostController extends BaseController {
 
     /**
      * 发表文章
+     *
      * @param post
      * @param bindingResult
      * @return
@@ -134,7 +156,7 @@ public class PostController extends BaseController {
 
         } else {
             Post tempPost = postService.getById(post.getId());
-            if(tempPost.getUserId().equals(getProfileId())) {
+            if (tempPost.getUserId().equals(getProfileId())) {
                 return R.failed("不是自己的帖子");
             }
         }
@@ -142,6 +164,64 @@ public class PostController extends BaseController {
         // TODO: 2018/12/13 给所有订阅人发送消息
 
         return R.ok(post.getId());
+    }
+
+
+    /**
+     * 删除文章
+     *
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @Transactional
+    @RequestMapping("/user/post/delete")
+    public R postDelete(Long id) {
+        Post post = postService.getById(id);
+
+        Assert.isTrue(post != null, "该帖子已被删除");
+
+        Long profileId = getProfileId();
+        if (post.getUserId().equals(profileId)) {
+            return R.failed("不是删除非自己的帖子");
+        }
+
+        postService.removeById(id);
+
+        // 同时删除所有的相关收藏
+        userCollectionService.removeByMap(MapUtil.of("post_id", id));
+//      同时删除所有的相关评论
+        commentService.removeByMap(MapUtil.of("post_id", id));
+
+        return R.ok(null);
+    }
+
+    /**
+     * 判断是否收藏
+     *
+     * @param postId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/user/post/collection/find")
+    public R collectionFind(String postId) {
+        int count = userCollectionService.count(new QueryWrapper<UserCollection>()
+                .eq("post_id", postId)
+                .eq("user_id", getProfileId()));
+
+        return R.ok(MapUtil.of("collection", count > 0));
+    }
+
+    /**
+     * 收藏
+     * @param postId
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/user/post/collection/add")
+    public R collectionAdd(Long postId) {
+        // TODO: 2018/12/18
+        return null;
     }
 }
 
