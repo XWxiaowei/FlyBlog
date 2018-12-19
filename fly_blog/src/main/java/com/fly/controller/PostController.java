@@ -67,7 +67,7 @@ public class PostController extends BaseController {
 
         request.setAttribute("pageData", pageData);
         request.setAttribute("currentCategoryId", id);
-        return "category";
+        return "post/category";
     }
 
     /**

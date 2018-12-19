@@ -21,6 +21,9 @@ CREATE TABLE `category` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+INSERT INTO `category` VALUES (1, '动态', '动态', null, null, '0', null, null, null, null, null, null);
+INSERT INTO `category` VALUES (2, '问答', '问答', null, null, '0', null, null, null, null, null, null);
+
 -- ----------------------------
 -- Records of category
 -- ----------------------------
@@ -133,7 +136,7 @@ CREATE TABLE `user` (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'xiaoming', '1111', 'admin@qq.com', null, '0', NULL,NULL,null, null, null, 'https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg', '0', '0', '0', null, '2018-10-14 18:41:34', null);
+INSERT INTO `user` VALUES ('1', 'xiaoming', 'e10adc3949ba59abbe56e057f20f883e', 'admin@qq.com', '13855608577', '0', '好好学习，天天向上', '1', null, null, null, 'https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg', '0', '0', '0', null, '2018-10-14 18:41:34', null);
 
 CREATE TABLE user_collection (
   id BIGINT NOT NULL auto_increment,
