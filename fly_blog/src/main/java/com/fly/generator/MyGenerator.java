@@ -76,6 +76,8 @@ public class MyGenerator {
 //        strategy.setExclude(new String[]{"t_rong_bid"}); // 排除生成的表
         // 字段名生成策略
         strategy.setNaming(NamingStrategy.underline_to_camel);
+        strategy.setSuperEntityColumns(new String[]{"id,created,modified"});
+
         // 自定义实体父类
 //         strategy.setSuperEntityClass("hello.entity.BaseEntity");
         // 自定义实体，公共字段

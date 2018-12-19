@@ -1,10 +1,11 @@
 package com.fly.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
-import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -27,9 +28,9 @@ public class UserCollection extends Model<UserCollection> {
 
     private Long postUserId;
 
-    private LocalDateTime created;
+    private Date created;
 
-    private LocalDateTime modified;
+    private Date modified;
 
 
     public Long getId() {
@@ -64,19 +65,20 @@ public class UserCollection extends Model<UserCollection> {
         this.postUserId = postUserId;
     }
 
-    public LocalDateTime getCreated() {
-        return created;
-    }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
-    public LocalDateTime getModified() {
+    public Date getCreated() {
+        return created;
+    }
+
+    public Date getModified() {
         return modified;
     }
 
-    public void setModified(LocalDateTime modified) {
+    public void setModified(Date modified) {
         this.modified = modified;
     }
 

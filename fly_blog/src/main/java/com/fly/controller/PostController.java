@@ -214,14 +214,99 @@ public class PostController extends BaseController {
 
     /**
      * 收藏
+     *
      * @param postId
      * @return
      */
     @ResponseBody
     @RequestMapping("/user/post/collection/add")
     public R collectionAdd(Long postId) {
-        // TODO: 2018/12/18
-        return null;
+        Post post = postService.getById(postId);
+        Assert.isTrue(post != null, "该帖子已被删除");
+
+        int count = userCollectionService.count(new QueryWrapper<UserCollection>()
+                .eq("post_id", post.getId())
+                .eq("user_id", getProfileId()));
+        if (count > 0) {
+            return R.failed("你已收藏该贴");
+        }
+        UserCollection userCollection = new UserCollection();
+        userCollection.setPostId(postId);
+        userCollection.setUserId(getProfileId());
+        userCollection.setCreated(new Date());
+        userCollection.setModified(new Date());
+        userCollection.setPostUserId(post.getUserId());
+
+        userCollectionService.save(userCollection);
+        return R.ok(MapUtil.of("collection", true));
     }
+
+    /**
+     * 取消收藏
+     *
+     * @param postId
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/user/post/collection/remove")
+    public R collectionRemove(String postId) {
+
+        Post post = postService.getById(Long.valueOf(postId));
+
+        Assert.isTrue(post != null, "该帖子已被删除");
+
+        boolean hasRemove = userCollectionService.remove(new QueryWrapper<UserCollection>()
+                .eq("post_id", postId)
+                .eq("user_id", getProfileId()));
+
+        return R.ok(hasRemove);
+    }
+
+    /**
+     * 保存评论
+     * @param comment
+     * @param bindingResult
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping("/user/post/comment")
+    public R commentAdd(@Valid Comment comment, BindingResult bindingResult) {
+        Post post = postService.getById(comment.getPostId());
+        Assert.isTrue(post != null, "该帖子已被删除");
+
+        comment.setUserId(getProfileId());
+        comment.setCreated(new Date());
+        comment.setModified(new Date());
+        comment.setStatus(Constant.NORMAL_STATUS);
+
+        // TODO 记录动作
+
+        // TODO 通知作者
+        commentService.save(comment);
+        return R.ok(null);
+    }
+
+    /**
+     * 删除评论
+     * @param id
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/user/post/comment/delete")
+    public R commentDel(Long id) {
+
+        Comment comment = commentService.getById(id);
+
+        Assert.isTrue(comment!= null, "改评论已被删除");
+
+        if(comment.getUserId().equals(getProfileId())) {
+            return R.failed("删除失败！");
+        }
+
+        commentService.removeById(id);
+
+        return R.ok(null);
+    }
+
 }
 

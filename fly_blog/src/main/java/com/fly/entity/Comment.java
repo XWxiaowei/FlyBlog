@@ -3,8 +3,12 @@ package com.fly.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -27,6 +31,7 @@ public class Comment extends Model<Comment> {
     /**
      * 评论的内容
      */
+    @NotBlank(message = "内容不能为空")
     private String content;
 
     /**
@@ -37,6 +42,7 @@ public class Comment extends Model<Comment> {
     /**
      * 评论的内容ID
      */
+    @NotNull(message = "帖子ID不能为空")
     private Long postId;
 
     /**
@@ -67,12 +73,12 @@ public class Comment extends Model<Comment> {
     /**
      * 评论的时间
      */
-    private LocalDateTime created;
+    private Date created;
 
     /**
      * 评论的更新时间
      */
-    private LocalDateTime modified;
+    private Date modified;
 
 
     public Long getId() {
@@ -147,19 +153,19 @@ public class Comment extends Model<Comment> {
         this.status = status;
     }
 
-    public LocalDateTime getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
-    public LocalDateTime getModified() {
+    public Date getModified() {
         return modified;
     }
 
-    public void setModified(LocalDateTime modified) {
+    public void setModified(Date modified) {
         this.modified = modified;
     }
 
