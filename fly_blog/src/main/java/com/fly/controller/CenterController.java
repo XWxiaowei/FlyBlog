@@ -38,6 +38,12 @@ import java.util.Map;
 public class CenterController extends BaseController {
 
 
+    /**
+     * 我发的帖子
+     * @param current
+     * @param size
+     * @return
+     */
     @GetMapping("/center")
     public String center(@RequestParam(defaultValue = "1") Integer current,
                          @RequestParam(defaultValue = "10") Integer size) {
@@ -239,8 +245,19 @@ public class CenterController extends BaseController {
     public Object getMessNums() {
         Map<Object, Object> result = new HashMap<>();
         result.put("status", 0);
-        result.put("count", 2);
+        result.put("count", 3);
         return result;
+    }
+
+
+    /**
+     * 已读消息
+     * @return
+     */
+    @ResponseBody
+    @PostMapping("/message/read")
+    public Object readMessNums() {
+        return R.ok(null);
     }
 
     /**

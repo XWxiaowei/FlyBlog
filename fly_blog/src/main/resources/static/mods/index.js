@@ -290,8 +290,8 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
             var msg = $('<a class="fly-nav-msg" href="javascript:;">'+ res.count +'</a>');
             elemUser.append(msg);
             msg.on('click', function(){
-              fly.json('/message/read', {}, function(res){
-                if(res.status === 0){
+              fly.json('/user/message/read', {}, function(res){
+                if(res.code === 0){
                   location.href = '/user/message/';
                 }
               });

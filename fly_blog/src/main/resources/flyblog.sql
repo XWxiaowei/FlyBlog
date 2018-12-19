@@ -138,6 +138,7 @@ CREATE TABLE `user` (
 -- ----------------------------
 INSERT INTO `user` VALUES ('1', 'xiaoming', 'e10adc3949ba59abbe56e057f20f883e', 'admin@qq.com', '13855608577', '0', '好好学习，天天向上', '1', null, null, null, 'https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg', '0', '0', '0', null, '2018-10-14 18:41:34', null);
 
+DROP TABLE IF EXISTS `user_collection`;
 CREATE TABLE user_collection (
   id BIGINT NOT NULL auto_increment,
   user_id BIGINT NOT NULL,
@@ -148,6 +149,8 @@ CREATE TABLE user_collection (
   PRIMARY KEY (`id`)
 ) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT '个人收藏';
 
+
+DROP TABLE IF EXISTS `user_message`;
 CREATE TABLE user_message (
   id BIGINT NOT NULL auto_increment,
   from_user_id BIGINT DEFAULT NULL COMMENT '发送消息的用户ID',
