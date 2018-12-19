@@ -75,6 +75,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
                 author.put("email", user.getEmail());
                 author.put("avatar", user.getAvatar());
                 author.put("id", user.getId());
+                author.put("vipLevel",user.getVipLevel());
 
                 record.put("author", author);
 
@@ -118,6 +119,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
             joinColumns.put("email", user.getEmail());
             joinColumns.put("avatar", user.getAvatar());
             joinColumns.put("id", user.getId());
+            joinColumns.put("vipLevel",user.getVipLevel());
             map.put("author", joinColumns);
 
         } else {

@@ -82,6 +82,8 @@ public class PostController extends BaseController {
                         @RequestParam(defaultValue = "10") Integer size) {
         Map<String, Object> post = postService.getMap(new QueryWrapper<Post>().eq("id", id));
         userService.join(post, "user_id");
+        categoryService.join(post, "category_id");
+
         Assert.notNull(post, "该文章已被删除");
 
         request.setAttribute("post", post);

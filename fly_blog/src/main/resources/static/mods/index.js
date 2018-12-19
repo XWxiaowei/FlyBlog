@@ -161,9 +161,9 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
                       , data: {
                           type: 'post'
                       }
-                      , done: function (res) {
-                          if (res.status == 0) {
-                              image.val(res.url);
+                      ,done: function(res){
+                          if(res.code == 0){
+                              image.val(res.data);
                           } else {
                               layer.msg(res.msg, {icon: 5});
                           }

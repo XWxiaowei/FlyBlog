@@ -83,12 +83,12 @@
                                 <img th:src="${data.author.avatar}" alt="">
                             </a>
                             <div class="fly-detail-user">
-                                <a href="fly-detail-user">
+                                <a href="" class="fly-link">
                                     <cite th:text="${data.author.username}"></cite>
-                                    <i class="iconfont icon-renzheng" title="认证信息：xxx"></i>
+                                    <i class="iconfont icon-renzheng" title="认证信息：XXX"></i>
                                     <i class="layui-badge fly-badge-vip" th:text="${data.author.vipLevel}"></i>
                                 </a>
-                                <span th:text="${data.author.id=post.author.id?'(楼主)':''}"></span>
+                                <span th:text="${data.author.id == post.author.id?'(楼主)':''}"></span>
                             </div>
 
                             <div class="detail-hits">
