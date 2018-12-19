@@ -30,11 +30,7 @@
                                     <div class="layui-input-block">
                                         <select lay-verify="required" name="categoryId" lay-filter="column">
                                             <option></option>
-                                            <option th:selected="${post.categoryId==data.id}"
-                                                   th:value="${data.id}"
-                                                    th:each="data:${categories}">
-                                                [[${data.name}]]
-                                            </option>
+                                            <option th:selected="${post.categoryId == data.id}" th:value="${data.id}" th:each="data:${categories}">[[${data.name}]]</option>
                                         </select>
                                     </div>
                                 </div>
@@ -89,7 +85,34 @@
     </div>
 </div>
 
+<script>
+    $(function() {
+        layui.use('form', function() {
+            var form = layui.form;
+            //监听提交
+            form.on('submit(post)', function (data) {
+                $.ajax({
+                    url: '/user/post',
+                    type: "POST",
+                    data: data.field,
+                    success: function (res) {
+                        if (res.code == 0) {
+                            layer.msg("操作成功");
+                            setTimeout(function () {
+                                location.href="/post/" + res.data;
+                            }, 1000);
 
+                        } else {
+                            layer.msg(res.msg);
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    });
+
+</script>
 <!--尾-->
 <div th:include="common/templates :: footer"></div>
 </body>
