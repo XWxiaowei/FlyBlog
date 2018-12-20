@@ -222,9 +222,9 @@
             fly.json('/user/post/comment',data.field,function (res) {
                 if (res.code==0) {
                     layer.msg('操作成功');
-                    setTimeout(function () {
+                    // setTimeout(function () {
                         location.reload();
-                    },1000);
+                    // },1000);
                 }else {
                     layer.msg(res.msg);
                 }

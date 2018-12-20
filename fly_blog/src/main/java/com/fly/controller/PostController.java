@@ -89,7 +89,6 @@ public class PostController extends BaseController {
         request.setAttribute("post", post);
         request.setAttribute("currentCategoryId", post.get("category_id"));
 
-        // TODO: 2018/12/18 添加评论
         Page<Comment> page = new Page<>();
         page.setCurrent(current);
         page.setSize(size);
@@ -271,7 +270,7 @@ public class PostController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping("/user/post/comment")
+    @PostMapping("/user/post/comment")
     public R commentAdd(@Valid Comment comment, BindingResult bindingResult) {
         Post post = postService.getById(comment.getPostId());
         Assert.isTrue(post != null, "该帖子已被删除");

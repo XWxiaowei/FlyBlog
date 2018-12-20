@@ -1,8 +1,3 @@
-
-fd fd
-发布文章
-"u014534808"
-
 ## 头部登录状态
 ### shiro标签的引用
 由于shiro标签不是html的原生标签，所有我们需要先引入一个额外的依赖，shiro的标签库(thymeleaf的拓展标签)。
@@ -173,9 +168,148 @@ fd fd
     }
 ```
 前端页面在 `/user/setting.html` 中
-## 个人中心-我的收藏
-## 个人中心-我的消息
 ## 发表，编辑博客
-## 用户主页
-## 博客评论功能
+发表和编辑博客是同一个页面，前端页面展示
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20181219232731939.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
+ajax 请求代码：
 
+```
+    $(function() {
+        layui.use('form', function() {
+            var form = layui.form;
+            //监听提交
+            form.on('submit(post)', function (data) {
+                $.ajax({
+                    url: '/user/post',
+                    type: "POST",
+                    data: data.field,
+                    success: function (res) {
+                        if (res.code == 0) {
+                            layer.msg("操作成功");
+                            setTimeout(function () {
+                                location.href="/post/" + res.data;
+                            }, 1000);
+
+                        } else {
+                            layer.msg(res.msg);
+                        }
+                    }
+                });
+                return false;
+            });
+        });
+    });
+```
+后台接口在`com.fly.controller.PostController`类中：
+```
+  @ResponseBody
+    @PostMapping("/user/post")
+    public R postArticle(@Valid Post post, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return R.failed(bindingResult.getFieldError().getDefaultMessage());
+        }
+//        新增文章
+        if (post.getId() == null) {
+            post.setUserId(getProfileId());
+
+            post.setModified(new Date());
+            post.setCreated(new Date());
+            post.setCommentCount(0);
+            post.setEditMode(Constant.EDIT_HTML_MODEL);
+            post.setLevel(0);
+            post.setRecommend(false);
+            post.setViewCount(0);
+            post.setVoteDown(0);
+            post.setVoteUp(0);
+            post.setStatus(Constant.NORMAL_STATUS);
+
+        } else {
+            Post tempPost = postService.getById(post.getId());
+            if (tempPost.getUserId().equals(getProfileId())) {
+                return R.failed("不是自己的帖子");
+            }
+        }
+        postService.saveOrUpdate(post);
+        // TODO: 2018/12/13 给所有订阅人发送消息
+
+        return R.ok(post.getId());
+    }
+```
+### 博文回显
+用户编辑完博客之后，点击提交保存之后就可以 调用`/user/post` 进行博文回显，博客的地址`com.fly.controller.PostController#index`， 博文回显主要博文，用户，分类以及评论信息，核心代码如下：
+
+```
+        Map<String, Object> post = postService.getMap(new QueryWrapper<Post>().eq("id", id));
+
+        userService.join(post, "user_id");
+        categoryService.join(post, "category_id");
+
+        Assert.notNull(post, "该文章已被删除");
+
+        req.setAttribute("post", post);
+        req.setAttribute("currentCategoryId", post.get("category_id"));
+
+
+        Page<Comment> page = new Page<>();
+        page.setCurrent(current);
+        page.setSize(size);
+
+        IPage<Map<String, Object>> pageData = commentService.pageMaps(page, new QueryWrapper<Comment>()
+                .eq("post_id", id)
+                .orderByDesc("created"));
+
+        userService.join(pageData, "user_id");
+        commentService.join(pageData, "parent_id");
+
+        req.setAttribute("pageData", pageData);
+```
+前端页面在 `templates/post/index.html` 部分代码如下：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20181220095437636.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
+页面效果如下：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20181220100735641.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20181220100750146.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
+## 用户主页
+
+## 博客评论功能
+用户评论表：
+
+```
+CREATE TABLE `comment` (
+  `id` bigint(32) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `content` longtext NOT NULL COMMENT '评论的内容',
+  `parent_id` bigint(32) DEFAULT NULL COMMENT '回复的评论ID',
+  `post_id` bigint(32) NOT NULL COMMENT '评论的内容ID',
+  `user_id` bigint(32) NOT NULL COMMENT '评论的用户ID',
+  `vote_up` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '“顶”的数量',
+  `vote_down` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '“踩”的数量',
+  `level` tinyint(2) unsigned NOT NULL DEFAULT '0' COMMENT '置顶等级',
+  `status` tinyint(2) DEFAULT NULL COMMENT '评论的状态',
+  `created` datetime NOT NULL COMMENT '评论的时间',
+  `modified` datetime DEFAULT NULL COMMENT '评论的更新时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+```
+后端接口代码在`在这里插入代码片`
+
+```
+    @ResponseBody
+    @PostMapping("/user/post/comment")
+    public R commentAdd(@Valid Comment comment, BindingResult bindingResult) {
+        Post post = postService.getById(comment.getPostId());
+        Assert.isTrue(post != null, "该帖子已被删除");
+
+        comment.setUserId(getProfileId());
+        comment.setCreated(new Date());
+        comment.setModified(new Date());
+        comment.setStatus(Constant.NORMAL_STATUS);
+
+        // TODO 记录动作
+
+        // TODO 通知作者
+        commentService.save(comment);
+        return R.ok(null);
+    }
+```
+
+前端页面在 `templates/post/index.html`  提交评论代码如下：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20181220101322586.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
