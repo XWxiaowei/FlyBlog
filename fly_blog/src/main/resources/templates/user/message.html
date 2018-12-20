@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>飞哥上码</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="fly,layui,前端社区">
+    <meta name="description" content="Fly社区是模块化前端UI框架Layui的官网社区，致力于为web开发提供强劲动力">
+
+    <!--全局样式-->
+    <link th:include="common/static :: style" />
+</head>
+<body>
+
+<!--头-->
+<div th:include="common/templates :: header"></div>
+
+<div class="layui-container fly-marginTop fly-user-main">
+
+    <div th:replace="common/_center :: left('message')"></div>
+    <div class="fly-panel fly-panel-user" pad20>
+        <div th:if="${not #lists.isEmpty(pageData.records)}"
+             class="layui-tab layui-tab-brief" lay-filter="user"
+             id="LAY_msg" style="margin-top:15px;">
+                <ul class="mine-msg">
+                    <li th:data-id="${data.id}" th:each="data:${pageData.records}">
+                        <blockquote class="layui-elem-quote" th:if="${data.type==0}">
+                            系统消息：<text th:text="${data.content}"></text>
+                        </blockquote>
+
+                        <blockquote class="layui-elem-quote" th:if="${data.type==1||data.type==2}">
+                            <a th:href="@{'/u/'+${data.author.id}}" target="_blank">
+                                <cite th:text="${data.author.username}"></cite>
+                            </a>
+                            <text th:if="${data.type==1}">评论了您的文章</text>
+                            <text th:if="${data.type==2}">回答了您的评论</text>
+
+                            <a target="_blank" th:href="@{'/post/'+${data.post_id}}">
+                                <cite th:text="${data.content}"></cite>
+                            </a>
+                        </blockquote>
+
+                        <p><span th:text="${data.created}"></span>
+                            <a href="javascript:;" class="layui-btn layui-btn-small layui-btn-danger fly-delete">删除</a>
+                        </p>
+                    </li>
+                </ul>
+            <div th:if="${not #lists.isEmpty(pageData.records)}" style="text-align: center">
+                <div th:include="common/page :: page"></div>
+            </div>
+        </div>
+
+    </div>
+    <div class="fly-none" th:if="${#lists.isEmpty(pageData.records)}">您暂时没有最新消息</div>
+
+</div>
+
+<!--尾-->
+<div th:include="common/templates :: footer"></div>
+</body>
+</html>

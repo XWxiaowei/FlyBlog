@@ -38,7 +38,7 @@ layui.define('fly', function(exports){
   });
 
   //提交回答
-  fly.form['/jie/reply/'] = function(data, required){
+  fly.form['/user/post/comment'] = function(data, required){
     var tpl = '<li>\
       <div class="detail-about detail-about-reply">\
         <a class="fly-avatar" href="/u/{{ layui.cache.user.uid }}" target="_blank">\
@@ -206,10 +206,10 @@ layui.define('fly', function(exports){
     ,del: function(li){ //删除
       layer.confirm('确认删除该回答么？', function(index){
         layer.close(index);
-        fly.json('/api/jieda-delete/', {
+        fly.json('/user/post/comment/delete/', {
           id: li.data('id')
         }, function(res){
-          if(res.status === 0){
+          if(res.code === 0){
             var count = dom.jiedaCount.text()|0;
             dom.jiedaCount.html(--count);
             li.remove();

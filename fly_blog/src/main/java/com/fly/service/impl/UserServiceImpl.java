@@ -49,7 +49,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 //        更新最后登录时间
         user.setLasted(new Date());
-        user.updateById();
+        // TODO: 2018/12/12
+//        user.updateById();
 
         AccountProfile profile = new AccountProfile();
 
@@ -74,6 +75,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
                 author.put("email", user.getEmail());
                 author.put("avatar", user.getAvatar());
                 author.put("id", user.getId());
+                author.put("vipLevel",user.getVipLevel());
 
                 record.put("author", author);
 
@@ -112,10 +114,16 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
         String linkfieldValue = map.get(field).toString();
 
         User user = this.getById(linkfieldValue);
-        joinColumns.put("username", user.getUsername());
-        joinColumns.put("email", user.getEmail());
-        joinColumns.put("avatar", user.getAvatar());
-        joinColumns.put("id", user.getId());
-        map.put("author", joinColumns);
+        if (user != null) {
+            joinColumns.put("username", user.getUsername());
+            joinColumns.put("email", user.getEmail());
+            joinColumns.put("avatar", user.getAvatar());
+            joinColumns.put("id", user.getId());
+            joinColumns.put("vipLevel",user.getVipLevel());
+            map.put("author", joinColumns);
+
+        } else {
+            map.put("author",null);
+        }
     }
 }

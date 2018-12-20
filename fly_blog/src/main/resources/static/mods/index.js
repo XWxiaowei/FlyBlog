@@ -153,19 +153,22 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
             ,success: function(layero, index){
               var image =  layero.find('input[name="image"]');
 
-              //执行上传实例
-              upload.render({
-                elem: '#uploadImg'
-                ,url: '/api/upload/'
-                ,size: 200
-                ,done: function(res){
-                  if(res.status == 0){
-                    image.val(res.url);
-                  } else {
-                    layer.msg(res.msg, {icon: 5});
-                  }
-                }
-              });
+                  //执行上传实例
+                  upload.render({
+                      elem: '#uploadImg'
+                      , url: '/user/upload/'
+                      , size: 200
+                      , data: {
+                          type: 'post'
+                      }
+                      ,done: function(res){
+                          if(res.code == 0){
+                              image.val(res.data);
+                          } else {
+                              layer.msg(res.msg, {icon: 5});
+                          }
+                      }
+                  });
               
               form.on('submit(uploadImages)', function(data){
                 var field = data.field;
@@ -280,15 +283,15 @@ layui.define(['layer', 'laytpl', 'form', 'element', 'upload', 'util'], function(
     ,newmsg: function(){
       var elemUser = $('.fly-nav-user');
       if(layui.cache.user.uid !== -1 && elemUser[0]){
-        fly.json('/message/nums/', {
+        fly.json('/user/message/nums/', {
           _: new Date().getTime()
         }, function(res){
           if(res.status === 0 && res.count > 0){
             var msg = $('<a class="fly-nav-msg" href="javascript:;">'+ res.count +'</a>');
             elemUser.append(msg);
             msg.on('click', function(){
-              fly.json('/message/read', {}, function(res){
-                if(res.status === 0){
+              fly.json('/user/message/read', {}, function(res){
+                if(res.code === 0){
                   location.href = '/user/message/';
                 }
               });

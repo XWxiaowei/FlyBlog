@@ -63,7 +63,7 @@ public class User extends Model<User> {
     /**
      * 生日
      */
-    private LocalDateTime birthday;
+    private Date birthday;
 
     /**
      * 头像
@@ -99,6 +99,13 @@ public class User extends Model<User> {
      * 最后修改时间
      */
     private Date modified;
+
+    private String sign;
+
+    /**
+     * vip等级
+     */
+    private String vipLevel;
 
 
     public Long getId() {
@@ -165,11 +172,11 @@ public class User extends Model<User> {
         this.wechat = wechat;
     }
 
-    public LocalDateTime getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(LocalDateTime birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
@@ -233,6 +240,22 @@ public class User extends Model<User> {
     @Override
     protected Serializable pkVal() {
         return this.id;
+    }
+
+    public String getSign() {
+        return sign;
+    }
+
+    public void setSign(String sign) {
+        this.sign = sign;
+    }
+
+    public String getVipLevel() {
+        return vipLevel;
+    }
+
+    public void setVipLevel(String vipLevel) {
+        this.vipLevel = vipLevel;
     }
 
     @Override

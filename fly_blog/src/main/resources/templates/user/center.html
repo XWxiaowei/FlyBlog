@@ -1,1 +1,62 @@
-center
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>飞哥上码</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content="fly,layui,前端社区">
+    <meta name="description" content="Fly社区是模块化前端UI框架Layui的官网社区，致力于为web开发提供强劲动力">
+
+    <!--全局样式-->
+    <link th:include="common/static :: style"/>
+</head>
+<body>
+
+<!--头-->
+<div th:include="common/templates::header"></div>
+
+<div class="layui-container fly-marginTop fly-user-main">
+    <div th:replace="common/_center::left('center')"></div>
+    <div class="fly-panel fly-panel-user" pad20>
+        <div class="layui-tab layui-tab-brief">
+            <ul class="layui-tab-title" id="LAY_mine">
+                <li data-type="mine-jie" lay-id="index" class="layui-this">
+                    我发的贴（<span th:text="${pageData.total}"></span>）
+                </li>
+                <li data-type="collection" data-uri="/collection/find/" lay-id="collection">
+                    <a th:href="@{~/user/collection#collection}">
+                        我收藏的帖
+                    </a>
+                </li>
+            </ul>
+
+            <div class="layui-tab-content" style="padding: 20px 0;">
+                <div class="layui-tab-item layui-show" >
+                    <ul class="mine-view jie-row">
+                       <li th:each="data:${pageData.records}">
+                           <a class="jie-title" th:href="@{'/post/'+${data.id}}" target="_blank" th:text="${data.title}"></a>
+                            <i th:text="${data.created}"></i>
+                           <a class="mine-edit" th:href="@{/user/post(id=${data.id})}">编辑</a>
+                           <em><text th:text="${data.view_count}"></text>阅/<text th:text="${data.comment_count}"></text>答</em>
+                       </li>
+
+                    </ul>
+
+                    <div th:if="${#lists.isEmpty(pageData.records)}" class="fly_none">没有相关数据</div>
+                    <div th:if="${not #lists.isEmpty(pageData.records)}" style="text-align: center">
+                        <div th:include="common/page :: page"></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+
+</div>
+
+<!--尾-->
+<div th:include="common/templates :: footer"></div>
+</body>
+</html>

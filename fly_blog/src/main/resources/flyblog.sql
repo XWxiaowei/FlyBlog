@@ -1,4 +1,3 @@
-CREATE DATABASE fly_blog;
 USE fly_blog;
 SET FOREIGN_KEY_CHECKS=0;
 
@@ -21,6 +20,9 @@ CREATE TABLE `category` (
   `modified` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `category` VALUES (1, '动态', '动态', null, null, '0', null, null, null, null, null, null);
+INSERT INTO `category` VALUES (2, '问答', '问答', null, null, '0', null, null, null, null, null, null);
 
 -- ----------------------------
 -- Records of category
@@ -116,8 +118,10 @@ CREATE TABLE `user` (
   `email` varchar(64) DEFAULT NULL COMMENT '邮件',
   `mobile` varchar(32) DEFAULT NULL COMMENT '手机电话',
   `point` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '积分',
+  `sign` varchar(255) DEFAULT NULL COMMENT '个性签名',
   `gender` varchar(16) DEFAULT NULL COMMENT '性别',
   `wechat` varchar(32) DEFAULT NULL COMMENT '微信号',
+  `vip_level` varchar(32) DEFAULT NULL COMMENT 'vip等级',
   `birthday` datetime DEFAULT NULL COMMENT '生日',
   `avatar` varchar(256) NOT NULL COMMENT '头像',
   `post_count` int(11) unsigned NOT NULL DEFAULT '0' COMMENT '内容数量',
@@ -127,9 +131,35 @@ CREATE TABLE `user` (
   `created` datetime NOT NULL COMMENT '创建日期',
   `modified` datetime DEFAULT NULL COMMENT '最后修改时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES ('1', 'xiaoming', '1111', null, null, '0', null, null, null, 'https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg', '0', '0', '0', null, '2018-10-14 18:41:34', null);
+INSERT INTO `user` VALUES ('1', 'xiaoming', 'e10adc3949ba59abbe56e057f20f883e', 'admin@qq.com', '13855608577', '0', '好好学习，天天向上', '1', null, null, null, 'https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg', '0', '0', '0', null, '2018-10-14 18:41:34', null);
+
+DROP TABLE IF EXISTS `user_collection`;
+CREATE TABLE user_collection (
+  id BIGINT NOT NULL auto_increment,
+  user_id BIGINT NOT NULL,
+  post_id BIGINT NOT NULL,
+  post_user_id BIGINT NOT NULL,
+  created datetime NOT NULL,
+  modified datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = INNODB DEFAULT CHARSET = utf8 COMMENT '个人收藏';
+
+
+DROP TABLE IF EXISTS `user_message`;
+CREATE TABLE user_message (
+  id BIGINT NOT NULL auto_increment,
+  from_user_id BIGINT DEFAULT NULL COMMENT '发送消息的用户ID',
+  to_user_id BIGINT DEFAULT NULL COMMENT '接收消息的用户ID',
+  post_id BIGINT DEFAULT NULL COMMENT '消息可能关联的帖子',
+  comment_id BIGINT DEFAULT NULL COMMENT '消息可能关联的评论',
+  content text NOT NULL,
+  type TINYINT (2) DEFAULT NULL COMMENT '消息类型',
+  created datetime NOT NULL,
+  modified datetime NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE = INNODB DEFAULT CHARSET = utf8  COMMENT '我的消息';

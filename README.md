@@ -406,5 +406,115 @@ public class OAuth2Realm extends AuthorizingRealm {
 这时候shiro已经集成到了项目中，启动项目后会打印 "securityManager注入完成"的提示。
 然后我们可以使用`SecurityUtils.getSubject()`去操作用户的权限操作了。
 ## 登录注册
+### 登录接口：
+```
+ @PostMapping("/login")
+    @ResponseBody
+    public R doLogin(String email, String password, ModelMap model) {
+        if (StringUtils.isAnyBlank(email, password)) {
+            return R.failed("用户名或密码不能为空");
+        }
 
+        UsernamePasswordToken token = new UsernamePasswordToken(email, SecureUtil.md5(password));
+
+        try {
+
+            //尝试登陆，将会调用realm的认证方法
+            SecurityUtils.getSubject().login(token);
+
+        } catch (AuthenticationException e) {
+            if (e instanceof UnknownAccountException) {
+                return R.failed("用户不存在");
+            } else if (e instanceof LockedAccountException) {
+                return R.failed("用户被禁用");
+            } else if (e instanceof IncorrectCredentialsException) {
+                return R.failed("密码错误");
+            } else {
+                return R.failed("用户认证失败");
+            }
+        }
+
+        return R.ok("登录成功");
+
+    }
+
+
+```
+前端调用：
+```
+<script>
+    layui.use('form',function(){
+        var form = layui.form;
+//        监听提交
+        form.on('submit(*)',function (data) {
+            $.post('/login',data.field,function (res) {
+                if (res.code==0) {
+                    location.href="/user/center";
+                }else {
+                    layer.msg(res.msg());
+                }
+            });
+            return false;
+        });
+
+        });
+
+</script>
+
+```
+注册与登录类似：
+## 博客分类、分页
+### 1. 首页分类显示
+由于分类变化较少，所以在项目初始化时候放在上下文猴子那个(ServletContext).
+但是这样也有问题，在web端与后台管理端不是同一个项目，或者做了负载均衡的项目，
+如果改动了分类信息，因为不同项目不同上下文，所以会出现数据不一致的可能。
+
+现阶段我们先把分类信息存放在上下文中，后期如果涉及到负载均衡或者分离时候，
+我们可以通过MQ消息队列的方式来改变上下文内容。
+
+博客分类信息是项目启动之后初始化到上下文，这里涉及到ApplicationRunner接口，
+ApplicationRunner接口是在容器启动成功后的最后一步回调（类似于开机自启）。
+```
+package org.springframework.boot;
+
+@FunctionalInterface
+public interface ApplicationRunner {
+    void run(ApplicationArguments var1) throws Exception;
+}
+
+```
+我们需要重写ApplicationRunner类的run方法，因为SpringBoot在启动完成之后
+会调用这个run方法。所以我们只需要把博客分类的逻辑在run方法里面实现就行。
+
+另外，因为需要用到上下文，所以我们也实现ServletContextAware方法，重写
+serServletContext方法，把serveltContext注入
+具体代码如下：
+```
+@Slf4j
+@Order(100)
+@Component
+public class ContextStartup implements ApplicationRunner,ServletContextAware {
+
+    private ServletContext servletContext;
+
+    @Autowired
+    CategoryService categoryService;
+
+    @Override
+    public void run(ApplicationArguments args) throws Exception {
+
+        servletContext.setAttribute("categorys", categoryService.list(null));
+
+        log.info("ContextStartup------------>加载categorys");
+
+    }
+
+    @Override
+    public void setServletContext(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
+}
+
+
+```
 

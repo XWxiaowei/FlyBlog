@@ -172,18 +172,19 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
         ,before: function(){
           avatarAdd.find('.loading').show();
         }
-        ,done: function(res){
-          if(res.status == 0){
-            $.post('/user/set/', {
-              avatar: res.url
-            }, function(res){
-              location.reload();
-            });
-          } else {
-            layer.msg(res.msg, {icon: 5});
+          , done: function (res) {
+              // if(res.status == 0){
+              //   $.post('/user/set/', {
+              //     avatar: res.url
+              //   }, function(res){
+              if (res.code == 0) {
+                  location.reload();
+                  // });
+              } else {
+                  layer.msg(res.msg, {icon: 5});
+              }
+              avatarAdd.find('.loading').hide();
           }
-          avatarAdd.find('.loading').hide();
-        }
         ,error: function(){
           avatarAdd.find('.loading').hide();
         }
@@ -330,13 +331,27 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
     //阅读后删除
     dom.minemsg.on('click', '.mine-msg li .fly-delete', function(){
       var othis = $(this).parents('li'), id = othis.data('id');
-      fly.json('/message/remove/', {
-        id: id
-      }, function(res){
-        if(res.status === 0){
-          othis.remove();
-          delEnd();
-        }
+      // fly.json('/message/remove/', {
+      //   id: id
+      // }, function(res){
+      //   if(res.status === 0){
+      //     othis.remove();
+      //     delEnd();
+      //   }
+        $.ajax({
+            url:'/user/message/remove',
+            data:{
+              id:id,
+                all:false
+            },
+            type:'post',
+            success:function (res) {
+                if (res.code=='0') {
+                    othis.remove();
+                    delEnd();
+                }
+            }
+
       });
     });
 
@@ -344,15 +359,30 @@ layui.define(['laypage', 'fly', 'element', 'flow'], function(exports){
     $('#LAY_delallmsg').on('click', function(){
       var othis = $(this);
       layer.confirm('确定清空吗？', function(index){
-        fly.json('/message/remove/', {
-          all: true
-        }, function(res){
-          if(res.status === 0){
-            layer.close(index);
-            othis.addClass('layui-hide');
-            delEnd(true);
-          }
-        });
+        // fly.json('/message/remove/', {
+        //   all: true
+        // }, function(res){
+        //   if(res.status === 0){
+        //     layer.close(index);
+        //     othis.addClass('layui-hide');
+        //     delEnd(true);
+        //   }
+        // });
+          $.ajax({
+              url: '/user/message/remove/',
+              data: {
+                  id: null,
+                  all: true
+              },
+              type:'POST',
+              success: function (res) {
+                if (res.code=='0') {
+                    layer.close(index);
+                    othis.addClass('layui-hide');
+                    delEnd(true);
+                }
+              }
+          });
       });
     });
 

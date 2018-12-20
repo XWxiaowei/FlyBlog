@@ -11,7 +11,7 @@ import java.util.Map;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author jay.xiang
@@ -25,11 +25,14 @@ public class CategoryServiceImpl extends BaseServiceImpl<CategoryMapper, Categor
         String linkfieldValue = map.get(field).toString();
 
         Category category = this.getById(linkfieldValue);
-        joinColumns.put("id", category.getId());
-        joinColumns.put("name", category.getName());
-        joinColumns.put("icon", category.getIcon());
-
-        map.put("category", joinColumns);
+        if (category != null) {
+            joinColumns.put("id", category.getId());
+            joinColumns.put("name", category.getName());
+            joinColumns.put("icon", category.getIcon());
+            map.put("category", joinColumns);
+        } else {
+            map.put("category",null);
+        }
 
     }
 }

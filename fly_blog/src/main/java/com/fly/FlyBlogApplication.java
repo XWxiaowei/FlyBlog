@@ -14,6 +14,6 @@ public class FlyBlogApplication {
 	public static void main(String[] args) {
 
 		SpringApplication.run(FlyBlogApplication.class, args);
-		log.info("--------------->系统启动成功");
+		log.info("------>系统启动成功");
 	}
 }

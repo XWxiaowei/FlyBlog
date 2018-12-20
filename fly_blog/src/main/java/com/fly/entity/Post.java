@@ -3,8 +3,13 @@ package com.fly.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.baomidou.mybatisplus.annotation.TableId;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -27,11 +32,14 @@ public class Post extends Model<Post> {
     /**
      * 标题
      */
+    @Length(min = 4,max = 32,message = "标题长度不能唱过最少4位，最长32位")
+    @NotBlank(message = "标题不能为空")
     private String title;
 
     /**
      * 内容
      */
+    @NotBlank(message = "内容不能为空")
     private String content;
 
     /**
@@ -39,6 +47,7 @@ public class Post extends Model<Post> {
      */
     private String editMode;
 
+    @NotNull(message = "分类不能为空")
     private Long categoryId;
 
     /**
@@ -84,12 +93,12 @@ public class Post extends Model<Post> {
     /**
      * 创建日期
      */
-    private LocalDateTime created;
+    private Date created;
 
     /**
      * 最后更新日期
      */
-    private LocalDateTime modified;
+    private Date modified;
 
 
     public Long getId() {
@@ -196,19 +205,19 @@ public class Post extends Model<Post> {
         this.status = status;
     }
 
-    public LocalDateTime getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDateTime created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
-    public LocalDateTime getModified() {
+    public Date getModified() {
         return modified;
     }
 
-    public void setModified(LocalDateTime modified) {
+    public void setModified(Date modified) {
         this.modified = modified;
     }
 

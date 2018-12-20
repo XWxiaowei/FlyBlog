@@ -11,6 +11,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author jay.xiang
  * @since 2018-10-29
  */
-public interface CommentService extends IService<Comment> {
+public interface CommentService extends BaseService<Comment> {
 
 }

@@ -20,6 +20,9 @@
         <result column="lasted" property="lasted" />
         <result column="created" property="created" />
         <result column="modified" property="modified" />
+        <result column="sign" property="sign"/>
+        <result column="vip_level" property="vipLevel"/>
+
     </resultMap>
 
 </mapper>
