@@ -218,17 +218,36 @@
         });
 
         var form = layui.form;
-        form.on('submit(comment)',function () {
-            fly.json('/user/post/comment',data.field,function (res) {
-                if (res.code==0) {
-                    layer.msg('操作成功');
-                    // setTimeout(function () {
-                        location.reload();
-                    // },1000);
-                }else {
-                    layer.msg(res.msg);
-                }
+        //监听提交
+        form.on('submit(comment)', function (data) {
+            // fly.json("/user/post/comment", data.field, function (res) {
+            //     if(res.code === 0){
+            //         layer.msg("操作成功");
+            //         setTimeout(function () {
+            //             location.reload();
+            //         }, 1000);
+            //
+            //     } else {
+            //         layer.msg(res.msg);
+            //     }
+            // });
+            // return false;
 
+            $.ajax({
+                url:'/user/post/comment',
+                data: data.field,
+                type:'POST',
+                success: function (res) {
+                    if (res.code == 0) {
+                        layer.msg('操作成功');
+                        setTimeout(function () {
+                            location.href="/post/" + res.data;
+                        }, 1000);
+
+                    } else {
+                        layer.msg(res.msg);
+                    }
+                }
             });
             return false;
         });

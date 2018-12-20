@@ -235,6 +235,27 @@ ajax 请求代码：
         return R.ok(post.getId());
     }
 ```
+### 显示渲染博客
+我们原先的显示博客内容是通过如下标签来显示的
+
+```
+<div class="detail-body photos" th:text="${post.content}"></div>
+```
+但这样显示出来的内容明显和我们预览的不一样，还需要经过layui的渲染，所以我们要加上一段js代码。在body后面加上（templates/post/index.html:253）
+
+```
+<script>
+    layui.use(['fly','face'],function () {
+        var $ = layui.$
+            ,fly=layui.fly;
+
+//        如果你是采用模板自带的编辑器，你需要开启以下语句来解析
+        $('.detail-body').each(function () {
+            var othis = $(this), html = othis.html();
+            othis.html(fly.content(html));
+        });
+```
+
 ### 博文回显
 用户编辑完博客之后，点击提交保存之后就可以 调用`/user/post` 进行博文回显，博客的地址`com.fly.controller.PostController#index`， 博文回显主要博文，用户，分类以及评论信息，核心代码如下：
 
@@ -313,3 +334,46 @@ CREATE TABLE `comment` (
 
 前端页面在 `templates/post/index.html`  提交评论代码如下：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20181220101322586.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
+
+### 配置异步请求登录过滤器
+在我们shiroConfig中，我们配置了非ajax的请求直接跳转到登录页面，但是受限的ajax请求则不能处理。
+如未登录状态下直接评论文档，我们应该给出 请先登录 的提示。
+在shiro中有很多过滤器。其中org.apache.shiro.web.filter.authc.UserFilter
+
+![在这里插入图片描述](https://img-blog.csdnimg.cn/2018122016543374.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
+在此我们继承UserFilter然后重写redirectToLogin方法。
+
+```
+public class AuthFilter extends UserFilter {
+
+    @Override
+    protected void redirectToLogin(ServletRequest servletRequest, ServletResponse response) throws IOException {
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+
+//        异步请求要先登录
+        String header = request.getHeader("X-Requested-With");
+        if (header != null && "XMLHttpRequest".equals(header)) {
+            Subject subject = SecurityUtils.getSubject();
+            if (!subject.isAuthenticated()) {
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().print(JSONUtil.toJsonStr(R.failed("请先登录!")));
+            } else {
+                super.redirectToLogin(servletRequest, response);
+
+            }
+        }
+
+    }
+}
+```
+然后在`com.fly.config.ShiroConfig`中注入AuthFilter 的Bean
+
+```
+ @Bean
+    public AuthFilter authFilter(){
+        return new AuthFilter();
+    }
+```
+![在这里插入图片描述](https://img-blog.csdnimg.cn/201812201656576.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
+参考代码：
+https://github.com/XWxiaowei/FlyBlog/tree/v5-collection-center

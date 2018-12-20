@@ -157,7 +157,7 @@ public class PostController extends BaseController {
 
         } else {
             Post tempPost = postService.getById(post.getId());
-            if (tempPost.getUserId().equals(getProfileId())) {
+            if (!tempPost.getUserId().equals(getProfileId())) {
                 return R.failed("不是自己的帖子");
             }
         }

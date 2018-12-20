@@ -1,6 +1,8 @@
 package com.fly.config;
 
 import at.pollux.thymeleaf.shiro.dialect.ShiroDialect;
+import cn.hutool.core.map.MapUtil;
+import com.fly.shiro.AuthFilter;
 import com.fly.shiro.OAuth2Realm;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.mgt.SecurityManager;
@@ -54,6 +56,9 @@ public class ShiroConfig {
 //        配置未授权跳转页面
         filterFactoryBean.setUnauthorizedUrl("/error/403");
 
+//        配置异步请求登录过滤器
+        filterFactoryBean.setFilters(MapUtil.of("user", authFilter()));
+
         HashMap<String, String> hashMap = new LinkedHashMap<>();
         hashMap.put("/login", "anon");
         hashMap.put("/user*", "user");
@@ -64,9 +69,18 @@ public class ShiroConfig {
         return filterFactoryBean;
     }
 
-    //用于thymeleaf模板使用shiro标签,shiro方言标签
+    /**
+     *
+     * 用于thymeleaf模板使用shiro标签,shiro方言标签
+     * @return
+     */
     @Bean
     public ShiroDialect shiroDialect() {
         return new ShiroDialect();
+    }
+
+    @Bean
+    public AuthFilter authFilter(){
+        return new AuthFilter();
     }
 }
