@@ -109,10 +109,8 @@
                     </li>
                 </ul>
 
-                <div style="text-align: center" th:if="${pageData.pages gt pageData.current}">
-                    <div class="laypage-main">
-                        <a href="jie/index.html" class="laypage-next">更多求解</a>
-                    </div>
+                <div th:if="${not #lists.isEmpty(pageData.records)}" style="text-align: center">
+                    <div th:include="common/page :: page"></div>
                 </div>
 
             </div>

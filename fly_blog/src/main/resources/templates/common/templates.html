@@ -81,6 +81,7 @@
 
         </div>
     </div>
+    Ï
 </div>
 <!--头部结束-->
 <!--头部nav-->
@@ -145,47 +146,42 @@
 <div th:fragment="weekPopular">
     <dl class="fly-panel fly-list-one">
         <dt class="fly-panel-title">本周热议</dt>
-        <dd>
-            <a href="jie/detail.html">飞哥上码</a>
-            <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-            <a href="jie/detail.html">飞哥上码</a>
-            <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-            <a href="jie/detail.html">飞哥上码</a>
-            <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-            <a href="jie/detail.html">飞哥上码</a>
-            <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-            <a href="jie/detail.html">飞哥上码</a>
-            <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-            <a href="jie/detail.html">飞哥上码</a>
-            <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-            <a href="jie/detail.html">飞哥上码</a>
-            <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-            <a href="jie/detail.html">飞哥上码</a>
-            <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-            <a href="jie/detail.html">飞哥上码</a>
-            <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
-        <dd>
-            <a href="jie/detail.html">飞哥上码</a>
-            <span><i class="iconfont icon-pinglun1"></i> 16</span>
-        </dd>
+        <script id="hostDd" type="text/html">
+            {{#  layui.each(d.list, function(index, item){ }}
+            <dd>
+                <a href="/post/{{item.id}}">{{item.title}}</a>
+                <span><i class="iconfont icon-pinglun1"></i>{{item.comment_count}}</span>
+            </dd>
+            {{#  }); }}
+            {{#  if(d.list.length === 0){ }}
+            <div class="fly-none">没有相关数据</div>
+            {{#  } }}
+        </script>
     </dl>
+    <script>
+        layui.use(['laytpl', 'fly'], function () {
+            var laytpl = layui.laytpl;
+
+            var post_hosts = document.getElementById("post-hosts");
+            var tpl = document.getElementById("hostDd").innerHTML;
+            var data = {};
+            $.ajax({
+                url: "/post/hosts",
+                async: false,
+                success: function (res) {
+                    if (res.code == 0) {
+                        data.list = res.data;
+                    }
+                }
+            });
+            laytpl(tpl).render(data, function (html) {
+                post_hosts.innerHTML += html;
+
+            });
+
+        });
+
+    </script>
 </div>
 <!--本周热议结束-->
 <!--签到-->

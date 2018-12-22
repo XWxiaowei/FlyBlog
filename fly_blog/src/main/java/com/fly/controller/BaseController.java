@@ -7,6 +7,7 @@ import com.fly.service.UserCollectionService;
 import com.fly.service.UserMessageService;
 import com.fly.service.UserService;
 import com.fly.shiro.AccountProfile;
+import com.fly.utils.RedisUtil;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -32,6 +33,8 @@ public class BaseController {
     UserMessageService userMessageService;
     @Autowired
     CommentService commentService;
+    @Autowired
+    RedisUtil redisUtil;
 
 
     protected AccountProfile getProfile() {

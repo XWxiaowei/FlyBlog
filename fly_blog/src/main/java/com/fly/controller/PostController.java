@@ -280,6 +280,11 @@ public class PostController extends BaseController {
         comment.setModified(new Date());
         comment.setStatus(Constant.NORMAL_STATUS);
 
+//        评论数量加一
+        post.setCommentCount(post.getCommentCount() + 1);
+        postService.saveOrUpdate(post);
+//      todo  更新首页排版的评论数量
+
         // TODO 记录动作
 
         // TODO 通知作者
