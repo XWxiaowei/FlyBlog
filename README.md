@@ -517,4 +517,8 @@ public class ContextStartup implements ApplicationRunner,ServletContextAware {
 
 
 ```
+### 分类详情与分页
+
+--------------------------以上代码v4-category--------------------------------
+参见 fly_blog/src/doc/v5-collection-center说明.md
 

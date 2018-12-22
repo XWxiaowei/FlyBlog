@@ -283,7 +283,8 @@ public class PostController extends BaseController {
 //        评论数量加一
         post.setCommentCount(post.getCommentCount() + 1);
         postService.saveOrUpdate(post);
-//      todo  更新首页排版的评论数量
+//        更新首页排版的评论数量
+        postService.incrZsetValueAndUnionForLastWeekRank(post.getId());
 
         // TODO 记录动作
 
