@@ -63,7 +63,7 @@
 //        监听提交
         form.on('submit(*)',function (data) {
             $.post('/login',data.field,function (res) {
-                if (res.code==0) {
+                if (res.code == 0) {
                     location.href="/user/center";
                 }else {
                     layer.msg(res.msg);

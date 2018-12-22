@@ -7,22 +7,23 @@
     <script src="/jquery.min.js"></script>
     <script src="/jquery.pagination.js"></script>
     <script src="/mods/user.js"></script>
-    <script th:inline="javascript" th:if="${session.profile!=null}">
+    <script th:inline="javascript">
         layui.cache.page = '';
         layui.cache.user = {
-            username: [[${session.profile.username}]],
-            avatar: [[${session.profile.id}]],
-            experience: 0,
-            sex: [[${session.profile.gender}]]
+            username: [[${session.profile == null? '' : session.profile.username}]]
+            ,uid: [[${session.profile == null? -1 : session.profile.id}]]
+            ,avatar: [[${session.profile == null? '' : session.profile.avatar}]]
+            ,experience: 0
+            ,sex: [[${session.profile == null? '' : session.profile.gender}]]
         };
         layui.config({
             version: "3.0.0",
-            base: '/mods/'
+            base: '/mods/' //这里实际使用时，建议改成绝对路径
         }).extend({
-            fly: 'index'
-        }).use('fly');
-
-
+            fly: 'index',
+            jie: 'jie',
+            user: 'user'
+        }).use('fly').use('jie').use('user');
     </script>
 
 </head>

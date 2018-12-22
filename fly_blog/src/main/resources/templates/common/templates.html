@@ -144,7 +144,7 @@
 
 <!--本周热议-->
 <div th:fragment="weekPopular">
-    <dl class="fly-panel fly-list-one">
+    <dl class="fly-panel fly-list-one" id="post-hots">
         <dt class="fly-panel-title">本周热议</dt>
         <script id="hostDd" type="text/html">
             {{#  layui.each(d.list, function(index, item){ }}
@@ -159,10 +159,10 @@
         </script>
     </dl>
     <script>
-        layui.use(['laytpl', 'fly'], function () {
+        layui.use(['laytpl'], function () {
             var laytpl = layui.laytpl;
 
-            var post_hosts = document.getElementById("post-hosts");
+            var post_hosts = document.getElementById("post-hots");
             var tpl = document.getElementById("hostDd").innerHTML;
             var data = {};
             $.ajax({

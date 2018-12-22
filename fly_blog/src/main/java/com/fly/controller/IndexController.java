@@ -180,7 +180,9 @@ public class IndexController extends BaseController {
     public R hostPost() {
         Set<ZSetOperations.TypedTuple> lastWeekRank = redisUtil.getZSetRank("last_week_rank", 0, 6);
         List<Map<String,Object>> hostPost = new ArrayList<>();
-
+        if (lastWeekRank == null) {
+            return R.ok(hostPost);
+        }
         for (ZSetOperations.TypedTuple typedTuple : lastWeekRank) {
             Map<String, Object> map = new HashMap<>();
             map.put("commnet_count", typedTuple.getScore());
