@@ -204,7 +204,7 @@ public class PostController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping("/user/post/collection/find")
+    @PostMapping("/user/post/collection/find")
     public R collectionFind(String postId) {
         int count = userCollectionService.count(new QueryWrapper<UserCollection>()
                 .eq("post_id", postId)

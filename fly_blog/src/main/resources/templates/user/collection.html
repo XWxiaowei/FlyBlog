@@ -37,7 +37,7 @@
                 <div class="layui-tab-item">
                     <ul class="mine-view jie-row">
                         <li th:each="data:${pageData.records}">
-                            <a class="jie-title" th:href="@{'/post/'+${data.post.id}"
+                            <a class="jie-title" th:href="@{'/post/'+${data.post.id}}"
                                target="_blank" th:text="${data.post.title}"></a>
                             <i th:text="${data.post.created}"></i>
                         </li>

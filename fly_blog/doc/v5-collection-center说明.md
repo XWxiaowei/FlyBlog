@@ -289,8 +289,6 @@ ajax 请求代码：
 页面效果如下：
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20181220100735641.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20181220100750146.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
-## 用户主页
-
 ## 博客评论功能
 用户评论表：
 
@@ -333,8 +331,7 @@ CREATE TABLE `comment` (
 ```
 
 前端页面在 `templates/post/index.html`  提交评论代码如下：
-![在这里插入图片描述](https://img-blog.csdnimg.cn/20181220101322586.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
-
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20181223162311760.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
 ### 配置异步请求登录过滤器
 在我们shiroConfig中，我们配置了非ajax的请求直接跳转到登录页面，但是受限的ajax请求则不能处理。
 如未登录状态下直接评论文档，我们应该给出 请先登录 的提示。
@@ -375,5 +372,60 @@ public class AuthFilter extends UserFilter {
     }
 ```
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/201812201656576.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
+### 博客收藏功能
+由于我们收藏按钮是通过js动态生成的，所以我们先在html中定义好存放收藏按钮的div，id 为`LAY_jieAdmin` 
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20181223184638217.png)
+在static/mods/jie.js 中
+
+```
+    var asyncRender = function () {
+        var div = $('.fly-admin-box'), jieAdmin = $('#LAY_jieAdmin');
+        //查询帖子是否收藏
+        if (jieAdmin[0] && layui.cache.user.uid != -1) {
+            $.post("/user/post/collection/find",
+                {postId: div.data('id')}, function (res) {
+                    console.log("--------------")
+                    jieAdmin.append('<span class="layui-btn layui-btn-xs jie-admin ' + (res.data.collection ? 'layui-btn-danger' : '') + '" type="collect" data-type="' + (res.data.collection ? 'remove' : 'add') + '">' + (res.data.collection ? '取消收藏' : '收藏') + '</span>');
+                });
+        }
+    }();
+```
+其中`layui.cache.user.uid` 是在templates/common/static.html 中定义的。从上述代码中我们可以看出，js 代码根据后端的返回值动态的生成 收藏 or 取消收藏
+后端接口如下：
+
+```
+    @ResponseBody
+    @PostMapping("/user/post/collection/find")
+    public R collectionFind(String postId) {
+        int count = userCollectionService.count(new QueryWrapper<UserCollection>()
+                .eq("post_id", postId)
+                .eq("user_id", getProfileId()));
+
+        return R.ok(MapUtil.of("collection", count > 0));
+    }
+
+```
+按钮点击效果的实现代码如下：
+
+```
+    ,collect: function(div){
+      var othis = $(this), type = othis.data('type');
+      fly.json('/user/post/collection/'+ type +'/', {
+          postId: div.data('id')
+      }, function(res){
+        if(type === 'add'){
+          othis.data('type', 'remove').html('取消收藏').addClass('layui-btn-danger');
+        } else if(type === 'remove'){
+          othis.data('type', 'add').html('收藏').removeClass('layui-btn-danger');
+        }
+      });
+    }
+  };
+```
+后端代码比较简单，参见：`com.fly.controller.PostController` 中的相关方法。
+
+效果图：
+![在这里插入图片描述](https://img-blog.csdnimg.cn/20181223184423225.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ1MzQ4MDg=,size_16,color_FFFFFF,t_70)
+
 参考代码：
 https://github.com/XWxiaowei/FlyBlog/tree/v5-collection-center
