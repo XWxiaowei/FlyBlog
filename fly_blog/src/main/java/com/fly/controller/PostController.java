@@ -304,9 +304,9 @@ public class PostController extends BaseController {
 
         Comment comment = commentService.getById(id);
 
-        Assert.isTrue(comment!= null, "改评论已被删除");
+        Assert.isTrue(comment!= null, "该评论已被删除");
 
-        if(comment.getUserId().equals(getProfileId())) {
+        if(!comment.getUserId().equals(getProfileId())) {
             return R.failed("删除失败！");
         }
 
