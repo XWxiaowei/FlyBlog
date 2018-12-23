@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
                                 <div class="layui-form-item">
-                                   <button class="layui-btn" lay-filter="*" lay-submit>立即登录</button>
+                                   <button class="layui-btn" lay-filter="loginNow" lay-submit>立即登录</button>
                                     <span style="padding-left:20px;">
                                         <a href="forget.html"></a>
                                     </span>
@@ -59,9 +59,9 @@
 <div th:include="common/templates::footer"></div>
 <script>
     layui.use('form',function(){
-        var form = layui.form;
+        var form = layui.form;  //获取form模块
 //        监听提交
-        form.on('submit(*)',function (data) {
+        form.on('submit(loginNow)',function (data) {
             $.post('/login',data.field,function (res) {
                 if (res.code == 0) {
                     location.href="/user/center";
