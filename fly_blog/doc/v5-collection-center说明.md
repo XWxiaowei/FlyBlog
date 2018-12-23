@@ -377,7 +377,7 @@ public class AuthFilter extends UserFilter {
 ![在这里插入图片描述](https://img-blog.csdnimg.cn/20181223184638217.png)
 在static/mods/jie.js 中
 
-```
+`````
     var asyncRender = function () {
         var div = $('.fly-admin-box'), jieAdmin = $('#LAY_jieAdmin');
         //查询帖子是否收藏
