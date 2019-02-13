@@ -13,6 +13,7 @@
 
 	<modules>
 		<module>fb_blog</module>
+		<module>fb_common</module>
 	</modules>
 
 	<parent>
