@@ -8,12 +8,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @Slf4j
 @SpringBootApplication
 @MapperScan(value = "com.fly.dao")
-public class FlyBlogApplication {
+public class FbBlogApplication {
 
 
 	public static void main(String[] args) {
 
-		SpringApplication.run(FlyBlogApplication.class, args);
+		SpringApplication.run(FbBlogApplication.class, args);
 		log.info("------>系统启动成功");
 	}
 }
