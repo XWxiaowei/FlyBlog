@@ -18,6 +18,7 @@
 		<module>fb_im</module>
 		<module>fb_search</module>
 		<module>fb_server</module>
+		<module>fb_gateway</module>
 	</modules>
 
 	<parent>

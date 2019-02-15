@@ -1,0 +1,17 @@
+
+server:
+  port: 8888
+spring:
+  application:
+    name: fb-gateway
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:admin@localhost:8761/eureka/
+#路由规则配置
+zuul:
+  routes:
+     fb-blog:
+        path: /**
+        serviceId: fb-blog
+

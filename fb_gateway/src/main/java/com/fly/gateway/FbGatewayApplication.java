@@ -1,21 +1,18 @@
-package com.fly;
+package com.fly.gateway;
 
-import lombok.extern.slf4j.Slf4j;
-import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.zuul.EnableZuulProxy;
 
-@Slf4j
 @SpringBootApplication
-@MapperScan(value = "com.fly.dao")
+@EnableZuulProxy
 @EnableEurekaClient
-public class FbBlogApplication {
-
+public class FbGatewayApplication {
 
 	public static void main(String[] args) {
-
-		SpringApplication.run(FbBlogApplication.class, args);
-		log.info("------>系统启动成功");
+		SpringApplication.run(FbGatewayApplication.class, args);
 	}
+
 }
+
