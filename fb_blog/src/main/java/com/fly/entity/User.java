@@ -12,7 +12,7 @@ import java.util.Date;
  * 
  * </p>
  *
- * @author jay.xiang
+ * @author fly.xiang
  * @since 2018-10-29
  */
 public class User extends Model<User> {

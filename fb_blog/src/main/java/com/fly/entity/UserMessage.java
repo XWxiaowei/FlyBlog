@@ -11,7 +11,7 @@ import java.io.Serializable;
  * 我的消息
  * </p>
  *
- * @author jay.xiang
+ * @author fly.xiang
  * @since 2018-12-12
  */
 public class UserMessage extends Model<UserMessage> {

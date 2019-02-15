@@ -13,10 +13,10 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.homework.common.exception;
+package com.fly.common.exception;
 
 
-import com.homework.common.resultVo.IErrorCode;
+import com.fly.common.resultVo.IErrorCode;
 
 /**
  * <p>

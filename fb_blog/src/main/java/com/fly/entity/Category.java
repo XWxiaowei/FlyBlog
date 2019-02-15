@@ -11,7 +11,7 @@ import java.io.Serializable;
  * 
  * </p>
  *
- * @author jay.xiang
+ * @author fly.xiang
  * @since 2018-10-29
  */
 public class Category extends Model<Category> {

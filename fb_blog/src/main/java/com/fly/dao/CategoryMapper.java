@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  *  Mapper 接口
  * </p>
  *
- * @author jay.xiang
+ * @author fly.xiang
  * @since 2018-10-29
  */
 public interface CategoryMapper extends BaseMapper<Category> {

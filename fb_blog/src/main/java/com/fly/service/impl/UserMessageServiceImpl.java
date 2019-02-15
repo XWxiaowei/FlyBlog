@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * 我的消息 服务实现类
  * </p>
  *
- * @author jay.xiang
+ * @author fly.xiang
  * @since 2018-12-12
  */
 @Service
