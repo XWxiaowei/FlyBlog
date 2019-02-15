@@ -61,18 +61,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!--集成mybatis-plus-->
-		<dependency>
-			<groupId>com.baomidou</groupId>
-			<artifactId>mybatis-plus-boot-starter</artifactId>
-			<version>3.0.1</version>
-		</dependency>
-		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<scope>runtime</scope>
-		</dependency>
-
 		<!--集成redis-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
