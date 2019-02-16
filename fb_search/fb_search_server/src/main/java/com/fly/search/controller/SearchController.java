@@ -1,7 +1,7 @@
 package com.fly.search.controller;
 
 import com.fly.common.resultVo.R;
-import com.fly.search.client.FbSearchClient;
+import com.fly.search.client.FbBlogClient;
 import com.fly.search.dto.SearchResultDTO;
 import com.fly.search.model.PostDocument;
 import com.fly.search.service.SearchService;
@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/fb-search")
-public class SearchController implements FbSearchClient {
+public class SearchController implements FbBlogClient {
     @Autowired
     SearchService searchService;
 

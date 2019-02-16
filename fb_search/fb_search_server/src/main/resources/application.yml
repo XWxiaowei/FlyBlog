@@ -1,0 +1,21 @@
+
+server:
+  port: 8091
+spring:
+  application:
+    name: fb-search
+  data:
+    elasticsearch:
+      cluster-name: kobe
+      cluster-nodes: 47.106.38.101:9300
+      repositories:
+        enabled: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    password: guest
+    username: guest
+eureka:
+  client:
+    service-url:
+      defaultZone: http://admin:admin@localhost:8761/eureka/
