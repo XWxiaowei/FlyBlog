@@ -1,4 +1,4 @@
-package com.fly;
+package com.fly.search;
 
 import static org.junit.Assert.assertTrue;
 
