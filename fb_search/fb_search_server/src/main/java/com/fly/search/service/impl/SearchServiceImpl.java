@@ -1,19 +1,26 @@
 package com.fly.search.service.impl;
 
+import cn.hutool.core.date.DateUtil;
+import com.fly.common.resultVo.R;
+import com.fly.search.client.FbBlogClient;
 import com.fly.search.common.IndexKey;
+import com.fly.search.dto.PostDTO;
+import com.fly.search.dto.PostMqIndexMessage;
 import com.fly.search.model.PostDocument;
 import com.fly.search.repository.PostRepository;
 import com.fly.search.service.SearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 /**
  * Created by xiang.wei on 2019/2/16
@@ -25,7 +32,10 @@ import org.springframework.stereotype.Service;
 public class SearchServiceImpl implements SearchService {
     @Autowired
     PostRepository postRepository;
-
+    @Autowired
+    FbBlogClient fbBlogClient;
+    @Autowired
+    ModelMapper modelMapper;
 
 
     @Override
@@ -48,5 +58,40 @@ public class SearchServiceImpl implements SearchService {
                 keyword, page.getTotalElements(), page.getTotalPages());
 
         return page;
+    }
+
+    @Override
+    public void createOrUpdateIndex(PostMqIndexMessage message) {
+        long postId = message.getPostId();
+
+
+        R r = fbBlogClient.findPostDTOByPostId(postId);
+
+        log.info("r------>{}", r);
+
+        Map<String, Object> data = (Map<String, Object>) r.getData();
+//        手动转换一下日期格式
+        data.put("created", DateUtil.parseDateTime(String.valueOf(data.get("created"))));
+
+        PostDTO postDTO = modelMapper.map(data, PostDTO.class);
+
+        if (PostMqIndexMessage.CREATE.equals(message.getType())) {
+            if (postRepository.existsById(postId)) {
+                this.removeIndex(message);
+            }
+        }
+
+        PostDocument postDocument = new PostDocument();
+        modelMapper.map(postDTO, postDocument);
+
+        PostDocument saveDoc = postRepository.save(postDocument);
+
+        log.info("es 索引更新成功！----->{}", saveDoc.toString());
+
+    }
+
+    @Override
+    public void removeIndex(PostMqIndexMessage message) {
+
     }
 }

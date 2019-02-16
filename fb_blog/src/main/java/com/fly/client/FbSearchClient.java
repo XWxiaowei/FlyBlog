@@ -1,10 +1,9 @@
-package com.fly.search.client;
+package com.fly.client;
 
 import com.fly.common.resultVo.R;
 import com.fly.search.dto.SearchResultDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,12 +15,16 @@ import org.springframework.web.bind.annotation.RequestParam;
  */
 @Component
 @FeignClient(name = "fb-blog")
-public interface FbBlogClient {
+public interface FbSearchClient {
+
+    @RequestMapping("/fb-blog/search/{current}/{size}")
+    R<SearchResultDTO> search(@PathVariable("current") Integer current, @PathVariable("size") Integer size, @RequestParam("keyword") String keyword);
 
     /**
-     * @param postId
+     * 注意需要admin权限
      * @return
      */
-    @GetMapping("/fb-blog/findPostDTOByPostId")
-    R findPostDTOByPostId(@RequestParam("postId") long postId);
+    @RequestMapping("/fb-blog/admin/initEsIndex")
+    R initEsIndex();
+
 }
