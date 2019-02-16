@@ -1,7 +1,9 @@
 package com.fly.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fly.entity.Post;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.fly.search.dto.PostDTO;
 
 /**
  * <p>
@@ -24,4 +26,17 @@ public interface PostService extends BaseService<Post> {
      */
     void incrZsetValueAndUnionForLastWeekRank(Long postId);
 
+    /**
+     * 查找文章
+     * @param postId
+     * @return
+     */
+    PostDTO findPostDTOById(long postId);
+
+    /**
+     * @param page
+     * @param keyword
+     * @return
+     */
+     IPage<PostDTO> findPostDTOByPage(Page<PostDTO> page, String keyword);
 }

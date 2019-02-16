@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.fly.dao.PostMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.fly.entity.Post">
+        <id column="id" property="id" />
+        <result column="title" property="title" />
+        <result column="content" property="content" />
+        <result column="edit_mode" property="editMode" />
+        <result column="category_id" property="categoryId" />
+        <result column="user_id" property="userId" />
+        <result column="vote_up" property="voteUp" />
+        <result column="vote_down" property="voteDown" />
+        <result column="view_count" property="viewCount" />
+        <result column="comment_count" property="commentCount" />
+        <result column="recommend" property="recommend" />
+        <result column="level" property="level" />
+        <result column="status" property="status" />
+        <result column="created" property="created" />
+        <result column="modified" property="modified" />
+    </resultMap>
+
+    <select id="findPostDTOById" resultType="com.fly.search.dto.PostDTO">
+        SELECT
+        p.id,
+        p.title,
+        u.id AS authorId,
+        u.username AS author,
+        u.avatar AS avatar,
+        u.vip_level AS authorVip,
+        c.id AS categoryId,
+        c.`name` AS category,
+        p.recommend,
+        p.`level`,
+        p.comment_count AS commentCount,
+        p.view_count AS viewCount,
+        p.created,
+        p. STATUS
+        FROM
+        post p
+        LEFT JOIN `user` u ON p.user_id = u.id
+        LEFT JOIN category c ON p.category_id = c.id
+        WHERE
+        p.id = #{postId}
+    </select>
+
+    <select id="findPostDTOByPage" resultType="com.fly.search.dto.PostDTO">
+        SELECT
+        p.id,
+        p.title,
+        u.id AS authorId,
+        u.username AS author,
+        u.avatar AS avatar,
+        u.vip_level AS authorVip,
+        c.id AS categoryId,
+        c.`name` AS category,
+        p.recommend,
+        p.`level`,
+        p.comment_count AS commentCount,
+        p.view_count AS viewCount,
+        p.created,
+        p. STATUS
+        FROM
+        post p
+        LEFT JOIN `user` u ON p.user_id = u.id
+        LEFT JOIN category c ON p.category_id = c.id
+    </select>
+
+
+</mapper>

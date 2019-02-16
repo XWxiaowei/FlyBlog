@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  */
 @Configuration
 @EnableTransactionManagement
-@MapperScan("com.fly.mapper")
+@MapperScan("com.fly.dao")
 public class MyBatisPlusConfig {
 
     /**

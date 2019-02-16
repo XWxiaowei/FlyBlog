@@ -4,10 +4,15 @@ import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateUnit;
 import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fly.entity.Post;
 import com.fly.dao.PostMapper;
+import com.fly.search.dto.PostDTO;
 import com.fly.service.PostService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fly.utils.RedisUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -26,6 +31,12 @@ import java.util.Map;
  */
 @Service
 public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implements PostService {
+    @Autowired
+    RedisUtil redisUtil;
+
+    @Autowired
+    PostMapper postMapper;
+
     @Override
     public void join(Map<String, Object> map, String field) {
         Map<String, Object> joinColumns = new HashMap<>();
@@ -83,6 +94,17 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
 
 //      重新union最近7天
         this.zUnionAndStroreLast7DaysForWeekRand();
+    }
+
+    @Override
+    public PostDTO findPostDTOById(long postId) {
+        return postMapper.findPostDTOById(postId);
+    }
+
+
+    @Override
+    public IPage<PostDTO> findPostDTOByPage(Page<PostDTO> page, String keyword) {
+        return postMapper.findPostDTOByPage(page, keyword);
     }
 
     /**

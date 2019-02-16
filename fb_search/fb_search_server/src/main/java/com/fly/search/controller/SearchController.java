@@ -20,11 +20,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/fb-search")
-public class SearchController implements FbBlogClient {
+public class SearchController{
     @Autowired
     SearchService searchService;
 
-    @Override
     @GetMapping("/search/{page}/{size}")
     public R<SearchResultDTO> search(@PathVariable(name = "page") Integer current,
                                      @PathVariable  Integer size, String keyword) {
@@ -35,7 +34,6 @@ public class SearchController implements FbBlogClient {
         return null;
     }
 
-    @Override
     public R initEsIndex() {
         return null;
     }
