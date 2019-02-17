@@ -14,17 +14,17 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author xiang.wei
  */
 @Component
-@FeignClient(name = "fb-blog")
+@FeignClient(name = "fb-search")
 public interface FbSearchClient {
 
-    @RequestMapping("/fb-blog/search/{current}/{size}")
+    @RequestMapping("/fb-search/search/{current}/{size}")
     R<SearchResultDTO> search(@PathVariable("current") Integer current, @PathVariable("size") Integer size, @RequestParam("keyword") String keyword);
 
     /**
      * 注意需要admin权限
      * @return
      */
-    @RequestMapping("/fb-blog/admin/initEsIndex")
+    @RequestMapping("/fb-search/admin/initEsIndex")
     R initEsIndex();
 
 }
